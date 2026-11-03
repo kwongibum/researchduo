@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연구해듀오 · 필요한 전문성으로 공동 연구자 찾기</title>
+<meta name="description" content="필요한 전문성으로 공동 연구자를 찾고 연결하는 AI 기반 연구자 매칭 서비스 (과학기술학개론 조별 프로젝트 프로토타입)">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="core/style.css">
+<link rel="stylesheet" href="core/home.css">
+</head>
+<!-- ===== 홈 (공통 · 팀장 관리) ===== -->
+<body data-page="home" data-root="./">
+<header id="nav"></header>
+
+<main>
+  <section class="hero">
+    <div class="hero-in">
+      <div class="hero-l">
+        <div class="kick">과학기술학개론 조별 프로젝트 · 프로토타입</div>
+        <h1>인원수가 아니라<br><em>필요한 전문성</em>으로<br>공동 연구자를 찾아요</h1>
+        <p>융합 연구에 필요한 전문성을 ‘자리’로 등록하면, 그 자리에 맞는 연구자와 추천 이유를 보여주고 커피챗부터 연구 그룹 결성까지 이어줘요.</p>
+        <div class="btns">
+          <a class="btn pri" href="features/matching/matching.html">프로젝트 올리고 매칭받기</a>
+          <a class="btn" href="features/profile/profile.html">내 연구 프로필 만들기</a>
+        </div>
+        <p class="naming">* ‘듀오’는 2인 제한이 아니라 ‘결혼해듀오’ 패러디예요. 필요한 만큼 팀이 자라요.</p>
+      </div>
+      <div class="hero-r" id="heroDemo"></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="block">
+      <div class="bh"><h2>핵심 기능 3가지</h2><span class="mute">기능마다 담당자가 따로 만든 모듈을 하나로 합친 사이트예요</span></div>
+      <div class="mods">
+        <a class="mod" href="features/profile/profile.html">
+          <span class="mod-n">①</span>
+          <h3>연구 프로필</h3>
+          <p>학년 대신 실제 역량·근거·목표 성과·협업 조건을 입력해요.</p>
+          <span class="mod-o">담당 · 이름</span>
+        </a>
+        <a class="mod" href="features/matching/matching.html">
+          <span class="mod-n">②</span>
+          <h3>프로젝트 개설 · AI 매칭</h3>
+          <p>필요한 전문성을 자리로 등록하면 자리마다 추천 연구자와 점수·이유를 보여줘요. 반대로 나에게 맞는 프로젝트도 추천해요.</p>
+          <span class="mod-o">담당 · 이름</span>
+        </a>
+        <a class="mod" href="features/connect/connect.html">
+          <span class="mod-n">③</span>
+          <h3>요청 · 커피챗 · 그룹</h3>
+          <p>협업 요청 → 수락 → 30분 커피챗 → 협업 합의서 → 연구 그룹. 실패하면 사유를 기록해요.</p>
+          <span class="mod-o">담당 · 이름</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="bh"><h2>이용 흐름</h2></div>
+      <ol class="flow">
+        <li><b>프로젝트 개설</b><span>연구 개요 + 필요 전문성 자리 + 목표 성과</span></li>
+        <li class="ai"><b>AI 양방향 매칭</b><span>프로젝트 → 연구자 · 연구자 → 프로젝트</span></li>
+        <li><b>협업 요청</b><span>캐스팅하거나 참여를 요청</span></li>
+        <li><b>Coffee Chat</b><span>30분 짧은 미팅으로 조율</span></li>
+        <li><b>연구 그룹 결성</b><span>합의서 작성 후 그룹 생성</span></li>
+      </ol>
+      <p class="loop">↻ 연구 중 새 전문성이 필요하면 <b>필요 역량만 추가해 재매칭</b>해요. 팀을 처음부터 다시 꾸리지 않아요.</p>
+    </section>
+
+    <section class="block">
+      <div class="bh"><h2>시나리오로 테스트하기</h2><span class="mute">팀이 작성한 시나리오를 그대로 불러와 매칭 결과를 확인해요</span></div>
+      <div class="scens" id="scens"></div>
+    </section>
+  </div>
+</main>
+
+<footer id="foot"></footer>
+<script src="core/data.js"></script>
+<script src="core/common.js"></script>
+<script src="features/matching/match.js"></script>
+<script>
+  /* 홈: 시나리오 카드 + 오른쪽 예시 매칭 카드 */
+  (() => {
+    const e = RD.esc;
+    document.getElementById('scens').innerHTML = Object.entries(SCENARIOS).map(([k, s]) => `
+      <a class="scn" href="features/matching/matching.html?s=${k}">
+        <span class="chip b">${e(s.label)}</span>
+        <h3>${e(s.project.title)}</h3>
+        <div class="scn-p">${e(s.persona)}</div>
+        <p><b>확인할 점</b> ${e(s.check)}</p>
+        <span class="scn-go">이 시나리오로 매칭해 보기 →</span>
+      </a>`).join('');
+
+    // 시나리오 4의 NLP 자리 매칭 결과 중 1위와 '근거 없음' 사례를 예시로 보여줌
+    const p = SCENARIOS[4].project;
+    const res = matchProject(p, RESEARCHERS)[0].results;
+    const pick = [res[0], res.find(m => m.r.id === 'r03')].filter(Boolean);
+    document.getElementById('heroDemo').innerHTML = `
+      <div class="demo-h"><span class="chip d">매칭 결과 예시</span><span>필요 전문성 · <b>NLP 모델링</b> (능숙 이상)</span></div>
+      ${pick.map((m, i) => `<div class="demo">
+        <div class="demo-top">${RD.avatar(m.r.name, m.r.id, 38)}<div><b>${e(m.r.name)}</b><span>${e(m.r.dept)} · ${e(m.r.degree)}</span></div><strong>${m.total}<small>/100</small></strong></div>
+        <ul>${(i === 0 ? m.reasons.slice(0, 3) : m.warns.slice(0, 2)).map(x => `<li class="${i === 0 ? 'ok' : 'wn'}">${e(x)}</li>`).join('')}</ul>
+      </div>`).join('')}
+      <p class="demo-c">같은 ‘PyTorch’ 경험이어도 <b>숙련도 근거</b>가 있는지에 따라 순위가 달라져요.</p>`;
+  })();
+</script>
+</body>
+</html>
