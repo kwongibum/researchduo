@@ -3,79 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>② 프로젝트 개설·매칭 · 연구해듀오</title>
+<title>② 매칭 · 연구해듀오</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="../../core/style.css">
 <link rel="stylesheet" href="../profile/profile-view.css">
 <link rel="stylesheet" href="matching.css">
 </head>
-<!-- ===== 기능 2 · 프로젝트 개설·매칭 (담당: 이름을 적어주세요) ===== -->
+<!-- ===== 기능 2 · 매칭 (담당: 이름을 적어주세요) ===== -->
 <body data-page="matching" data-root="../../">
 <header id="nav"></header>
 
 <main class="wrap">
   <div class="ph">
-    <div class="kick">기능 2 · 프로젝트 개설·AI 매칭</div>
-    <h1>필요한 전문성으로 공동 연구자 찾기</h1>
-    <p>모집 인원수 대신 <b>지금 필요한 전문성</b>을 자리(슬롯)로 등록하면, 자리마다 맞는 연구자와 그 이유를 보여줘요.</p>
+    <div class="kick">기능 2 · AI 매칭</div>
+    <h1>나와 맞는 연구자</h1>
+    <p>내 프로필과 다른 연구자의 프로필을 <b>매칭 카테고리 6개</b>로 비교해서, 잘 맞는 순서대로 보여줘요.</p>
   </div>
 
-  <div class="mtabs" role="tablist">
-    <button class="mtab on" data-tab="cast" role="tab">프로젝트 → 연구자 추천</button>
-    <button class="mtab" data-tab="forme" role="tab">연구자 → 나에게 맞는 프로젝트</button>
-  </div>
-
-  <!-- 탭 A: 프로젝트 개설 → 연구자 추천 -->
-  <section id="tab-cast">
-    <div class="scen">
-      <span class="scen-l">테스트 시나리오 불러오기</span>
-      <div class="btns" id="scenBtns"></div>
-      <div id="scenCheck" class="scen-check hide"></div>
-    </div>
-
-    <div id="addNotice" class="notice hide">
-      <b>재매칭</b> · 연구 중에 새로 필요해진 전문성을 아래에 추가하고 다시 매칭하세요. 팀을 처음부터 다시 꾸리지 않아도 돼요.
-    </div>
-
-    <div class="side">
-      <form id="pj" class="card" autocomplete="off">
-        <div class="card-h"><h2>프로젝트 개설</h2></div>
-        <div class="field"><label for="title">연구 제목</label><input type="text" id="title" placeholder="예) 대학생의 생성형 AI 활용이 학습 효율에 미치는 영향"></div>
-        <div class="field"><label for="summary">연구 개요</label><textarea id="summary" rows="3" placeholder="무엇을, 어떻게 연구하려는지 2~3문장으로"></textarea></div>
-
-        <div class="field" id="slotsField">
-          <span class="lbl">필요한 전문성 <small>인원수가 아니라 ‘자리’로 등록</small></span>
-          <div id="slots"></div>
-          <button type="button" class="btn sm" id="addSlot">+ 전문성 자리 추가</button>
-        </div>
-
-        <div class="field"><label for="goal">목표 성과</label><select id="goal"></select></div>
-        <div class="grid3">
-          <div class="field"><label for="hmin">주당 최소</label><input type="number" id="hmin" min="1" max="40" value="3"></div>
-          <div class="field"><label for="hmax">주당 최대</label><input type="number" id="hmax" min="1" max="40" value="6"></div>
-          <div class="field"><label for="mode">방식</label><select id="mode"></select></div>
-        </div>
-        <p id="err" class="hint err hide"></p>
-        <button type="submit" class="btn pri" style="width:100%">AI 매칭하기</button>
-      </form>
-
-      <div id="results">
-        <div class="empty"><b>아직 매칭 결과가 없어요</b>왼쪽에 프로젝트를 개설하거나, 위의 테스트 시나리오를 불러와 보세요.</div>
+  <div class="side">
+    <aside class="sticky">
+      <div class="card crit-card">
+        <div class="card-h"><h2>매칭 카테고리</h2><span class="mute">총점 = 평균</span></div>
+        <p class="mute crit-help">나에게 더 중요한 카테고리는 <b>중요</b>를 눌러 2배로 반영할 수 있어요.</p>
+        <div id="crit"></div>
       </div>
-    </div>
-  </section>
+      <div class="card" id="meCard"></div>
+    </aside>
 
-  <!-- 탭 B: 연구자 → 나에게 맞는 프로젝트 -->
-  <section id="tab-forme" class="hide">
-    <div id="forme"></div>
-  </section>
+    <section>
+      <div id="results"></div>
+    </section>
+  </div>
 </main>
 
 <footer id="foot"></footer>
+<script src="../../core/config.js"></script>
 <script src="../../core/data.js"></script>
 <script src="../../core/common.js"></script>
 <script src="../profile/profile-view.js"></script>
-<script src="match.js"></script>
+<script src="engine.js"></script>
+<!-- 매칭 카테고리 6개 (1인 1파일) -->
+<script src="criteria/1-topic.js"></script>
+<script src="criteria/2-skill.js"></script>
+<script src="criteria/3-experience.js"></script>
+<script src="criteria/4-major.js"></script>
+<script src="criteria/5-goal.js"></script>
+<script src="criteria/6-condition.js"></script>
 <script src="matching.js"></script>
 </body>
 </html>

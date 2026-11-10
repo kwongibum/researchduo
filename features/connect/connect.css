@@ -62,3 +62,13 @@
   .rq-meta{margin-left:0;justify-content:flex-start}
   .tally-r{grid-template-columns:120px 1fr 24px}
 }
+
+/* v0.2: 메시지 · 대기 · 강조 */
+.rq-msg{margin-top:10px;background:var(--bg);border-radius:6px;padding:9px 12px;font-size:14px}
+.rq-msg span{display:block;font-size:12px;color:var(--mute);margin-top:3px}
+.rq-msg.reply{background:var(--green-t)}
+.wait{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--sub);font-weight:600}
+.stat.hot{border-color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.stat.hot b{color:var(--blue)}
+.endbox .lbl{display:block}
+.sec-h .linkbtn{margin-left:auto}

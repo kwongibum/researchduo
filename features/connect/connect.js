@@ -1,27 +1,30 @@
 /* =========================================================
    기능 3 · 요청·커피챗·그룹 (connect.js)
-   - ② 매칭이 만든 요청(RD.store.getRequests)을 읽어서 단계를 진행시켜요.
+   - RD.api('listRequests') 로 내가 보내거나 받은 요청을 시트에서 불러와요.
    - 상태: req(요청됨) → acc(수락) → chat(커피챗 예정) → group(그룹 결성)
            req → rej(거절) / chat → end(커피챗 후 종료)
+   - 받은 사람만 수락·거절할 수 있고, 커피챗·합의서는 두 사람 모두 진행할 수 있어요.
+   - 30초마다 자동으로 새로고침해서 상대방의 응답을 반영해요.
    ========================================================= */
 (() => {
+  const me = RD.requireLogin();
+  if (!me) return;
   const $ = s => document.querySelector(s);
   const e = s => RD.esc(s);
 
   const PERIODS = ['1회 자문', '2주 단기 협업', '한 달', '한 학기'];
   const AUTHORS = ['공동 1저자', '2저자 이하 공동저자', '감사의 글', '해당 없음 (자문)'];
   const END_REASONS = ['역량이 기대와 달랐어요', '목표 성과가 달랐어요', '시간·일정이 안 맞았어요', '협업 방식이 안 맞았어요', '기타'];
+  const REJ_REASONS = ['지금은 시간이 없어요', '연구 주제가 맞지 않아요', '요청한 역할을 하기 어려워요', '기타'];
   const TIMES = ['10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '19:00', '20:00'];
   const STEPS = [['req', '요청'], ['acc', '수락'], ['chat', '커피챗'], ['group', '그룹 결성']];
 
-  const me = RD.store.getProfile();
-  const myName = (me && me.name) || '나';
+  let requests = [], profiles = [];
 
-  function inDays(n) {
-    const d = new Date(); d.setDate(d.getDate() + n);
-    return d.toISOString().slice(0, 10);
-  }
+  const inDays = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
   const opt = (list, sel) => list.map(v => `<option ${v === sel ? 'selected' : ''}>${e(v)}</option>`).join('');
+  const other = q => (q.fromId === me.id ? { id: q.toId, name: q.toName } : { id: q.fromId, name: q.fromName });
+  const prof = id => profiles.find(p => p.userId === id);
 
   function progress(status) {
     const idx = STEPS.findIndex(s => s[0] === status);
@@ -31,20 +34,32 @@
   }
 
   function head(q) {
-    const dirChip = q.dir === 'cast' ? '<span class="chip b">내가 캐스팅</span>' : '<span class="chip g">내가 참여 요청</span>';
+    const o = other(q), p = prof(o.id);
+    const sub = p ? [p.dept, p.degree].filter(Boolean).join(' · ') : '';
     return `<div class="rq-top">
-      ${RD.avatar(q.who.name, q.who.id, 42)}
-      <div class="rq-who"><b>${e(q.who.name)}</b><div class="sub">${e(q.who.dept)}</div></div>
-      <div class="rq-meta">${dirChip}<span class="chip">${e(q.slot.tag)} · ${e(q.slot.role)}</span>${q.score != null ? `<span class="chip d">${q.score}점</span>` : ''}</div>
+      ${RD.avatar(o.name, o.id, 42)}
+      <div class="rq-who"><b>${e(o.name)}</b><div class="sub">${e(sub)}</div></div>
+      <div class="rq-meta"><span class="chip ${q.fromId === me.id ? 'b' : 'g'}">${q.fromId === me.id ? '내가 보냄' : '나에게 옴'}</span>
+        <span class="chip">${e(q.role || '협업')}</span>${q.score != null ? `<span class="chip d">매칭 ${e(q.score)}점</span>` : ''}
+        ${p ? `<button class="linkbtn" data-view="${e(o.id)}">프로필</button>` : ''}</div>
     </div>
-    <div class="rq-proj">프로젝트 · <b>${e(q.project.title)}</b></div>`;
+    ${q.projectTitle ? `<div class="rq-proj">연구 주제 · <b>${e(q.projectTitle)}</b></div>` : ''}
+    <div class="rq-msg">“${e(q.message)}”<span>${e(q.fromName)} · ${e(q.created || '')}</span></div>
+    ${q.reply ? `<div class="rq-msg reply">“${e(q.reply)}”<span>${e(q.toName)}의 답장</span></div>` : ''}`;
   }
 
   function body(q) {
+    const iAmReceiver = q.toId === me.id;
     if (q.status === 'req') {
+      if (!iAmReceiver) return `<div class="rq-body"><div class="wait"><span class="spin"></span>${e(q.toName)}님의 응답을 기다리고 있어요</div></div>`;
       return `<div class="rq-body">
-        <div class="sim">상대방 응답 시뮬레이션</div>
-        <div class="btns"><button class="btn grn sm" data-act="accept">상대가 수락함</button><button class="btn sm" data-act="reject">상대가 거절함</button></div>
+        <div class="field"><span class="lbl">답장 <small>선택</small></span><input type="text" class="r-reply" placeholder="예) 좋아요! 다음 주에 이야기해요"></div>
+        <div class="btns"><button class="btn grn sm" data-act="accept">수락하기</button><button class="btn sm" data-act="showRej">거절하기</button></div>
+        <div class="endbox hide">
+          <span class="lbl">거절 이유 <small>상대에게 보여요</small></span>
+          <select class="r-reason">${opt(REJ_REASONS)}</select>
+          <button class="btn dark sm" data-act="reject" style="margin-top:8px">거절 보내기</button>
+        </div>
       </div>`;
     }
     if (q.status === 'acc') {
@@ -61,18 +76,18 @@
     if (q.status === 'chat') {
       const c = q.chat || {};
       return `<div class="rq-body">
-        <div class="chat-info"><b>커피챗 예정</b> ${e(c.date)} ${e(c.time)} · ${e(c.mode)} · 30분</div>
+        <div class="chat-info"><b>커피챗 예정</b> ${e(c.date)} ${e(c.time)} · ${e(c.mode)} · 30분 ${q.updatedBy ? `<span class="mute">(${e(q.updatedBy)} 확정)</span>` : ''}</div>
         <div class="agree-h">협업 합의서 <span class="mute">커피챗에서 정한 내용을 기록해요</span></div>
         <div class="grid3">
-          <div><span class="lbl">맡을 역할</span><input type="text" class="a-role" value="${e(q.slot.tag + ' · ' + q.slot.role)}"></div>
+          <div><span class="lbl">${e(q.toName)}님의 역할</span><input type="text" class="a-role" value="${e(q.role || '')}"></div>
           <div><span class="lbl">협업 기간</span><select class="a-period">${opt(PERIODS, '2주 단기 협업')}</select></div>
-          <div><span class="lbl">저자 순서</span><select class="a-author">${opt(AUTHORS, q.slot.role === '공동저자급 파트너' ? '공동 1저자' : '2저자 이하 공동저자')}</select></div>
+          <div><span class="lbl">저자 순서</span><select class="a-author">${opt(AUTHORS, q.role === '공동 연구자' ? '공동 1저자' : '2저자 이하 공동저자')}</select></div>
         </div>
         <div class="btns"><button class="btn grn sm" data-act="group">합의하고 그룹 결성</button><button class="btn sm" data-act="showEnd">협업하지 않기</button></div>
         <div class="endbox hide">
           <div class="grid2">
             <div><span class="lbl">협업하지 않는 이유</span><select class="e-reason">${opt(END_REASONS)}</select></div>
-            <div><span class="lbl">메모 <small>(선택)</small></span><input type="text" class="e-memo" placeholder="예) PyTorch는 기초 과제 수준이었음"></div>
+            <div><span class="lbl">메모 <small>선택</small></span><input type="text" class="e-memo" placeholder="예) 통계는 기초 수준이었음"></div>
           </div>
           <button class="btn dark sm" data-act="end">종료로 기록</button>
         </div>
@@ -81,91 +96,116 @@
     return '';
   }
 
+  function rq(q) { return `<div class="rq" data-id="${e(q.id)}">${head(q)}${progress(q.status)}${body(q)}</div>`; }
+
   function draw() {
-    const all = RD.store.getRequests();
-    const active = all.filter(q => ['req', 'acc', 'chat'].includes(q.status));
-    const groups = all.filter(q => q.status === 'group');
-    const ended = all.filter(q => ['rej', 'end'].includes(q.status));
-    const groupTitles = [...new Set(groups.map(q => q.project.title))];
+    const active = ['req', 'acc', 'chat'];
+    const inbox = requests.filter(q => q.toId === me.id && active.includes(q.status));
+    const sent = requests.filter(q => q.fromId === me.id && active.includes(q.status));
+    const groups = requests.filter(q => q.status === 'group');
+    const ended = requests.filter(q => ['rej', 'end'].includes(q.status));
 
     $('#stats').innerHTML = [
-      [active.filter(q => q.status !== 'chat').length, '응답·일정 대기'],
-      [active.filter(q => q.status === 'chat').length, '커피챗 예정'],
-      [groupTitles.length, '결성된 연구 그룹'],
+      [inbox.filter(q => q.status === 'req').length, '응답할 요청'],
+      [requests.filter(q => q.status === 'chat').length, '커피챗 예정'],
+      [groups.length, '함께하는 연구자'],
       [ended.length, '종료된 매칭'],
-    ].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('');
+    ].map(([n, l], i) => `<div class="stat ${i === 0 && n ? 'hot' : ''}"><b>${n}</b><span>${l}</span></div>`).join('');
 
-    /* 진행 중 */
-    $('#active').innerHTML = active.length
-      ? active.map(q => `<div class="rq" data-id="${q.id}">${head(q)}${progress(q.status)}${body(q)}</div>`).join('')
-      : `<div class="empty"><b>진행 중인 요청이 없어요</b>② 매칭에서 연구자에게 협업 요청을 보내거나, 나에게 맞는 프로젝트에 참여 요청을 보내 보세요.<br>
-         <a class="btn pri" href="../matching/matching.html">② 프로젝트 개설·매칭으로</a></div>`;
+    $('#inbox').innerHTML = inbox.length ? inbox.map(rq).join('') : '<div class="empty">받은 요청이 없어요.</div>';
+    $('#sent').innerHTML = sent.length ? sent.map(rq).join('')
+      : `<div class="empty">보낸 요청이 없어요.<br><a class="btn pri sm" href="../matching/matching.html">② 나와 맞는 연구자 찾기</a></div>`;
 
-    /* 그룹 */
-    $('#groups').innerHTML = groupTitles.length ? groupTitles.map(title => {
-      const ms = groups.filter(q => q.project.title === title);
-      const mine = ms.some(q => q.dir === 'cast');
-      const lead = mine
-        ? { name: myName, role: '프로젝트 개설자', period: '—', author: '—', seed: 'me' }
-        : { name: ms[0].who.name, role: '프로젝트 개설자', period: '—', author: '—', seed: ms[0].who.id };
-      const rows = [lead, ...ms.map(q => mine
-        ? { name: q.who.name, role: q.agree.role, period: q.agree.period, author: q.agree.author, seed: q.who.id }
-        : { name: myName, role: q.agree.role, period: q.agree.period, author: q.agree.author, seed: 'me' })];
-      return `<div class="grp">
-        <div class="grp-h"><div><span class="chip g">Research Group · ${rows.length}명</span><h3>${e(title)}</h3></div>
-          ${mine ? '<a class="btn sm" href="../matching/matching.html?add=1">필요 역량 추가 → 재매칭</a>' : ''}</div>
+    /* 그룹: 요청을 보낸 사람(개설자) + 연구 주제 기준으로 묶기 */
+    const map = {};
+    groups.forEach(q => {
+      const k = q.fromId + '|' + (q.projectTitle || q.toId);
+      (map[k] = map[k] || { title: q.projectTitle || `${q.fromName} × ${q.toName} 공동 연구`, lead: { id: q.fromId, name: q.fromName }, ms: [] }).ms.push(q);
+    });
+    const gl = Object.values(map);
+    $('#groups').innerHTML = gl.length ? gl.map(g => `<div class="grp">
+        <div class="grp-h"><div><span class="chip g">Research Group · ${g.ms.length + 1}명</span><h3>${e(g.title)}</h3></div></div>
         <div class="members">
-          <div class="mem mem-head"><span></span><span>이름</span><span>맡을 역할</span><span class="hide-s">기간</span><span class="hide-s">저자 순서</span></div>
-          ${rows.map(r => `<div class="mem">${RD.avatar(r.name, r.seed, 32)}<b>${e(r.name)}</b><span>${e(r.role)}</span><span class="hide-s">${e(r.period)}</span><span class="hide-s">${e(r.author)}</span></div>`).join('')}
+          <div class="mem mem-head"><span></span><span>이름</span><span>역할</span><span class="hide-s">기간</span><span class="hide-s">저자 순서</span></div>
+          <div class="mem">${RD.avatar(g.lead.name, g.lead.id, 32)}<b>${e(g.lead.name)}${g.lead.id === me.id ? ' (나)' : ''}</b><span>요청한 연구자</span><span class="hide-s">—</span><span class="hide-s">—</span></div>
+          ${g.ms.map(q => `<div class="mem">${RD.avatar(q.toName, q.toId, 32)}<b>${e(q.toName)}${q.toId === me.id ? ' (나)' : ''}</b><span>${e((q.agree || {}).role || q.role)}</span><span class="hide-s">${e((q.agree || {}).period || '')}</span><span class="hide-s">${e((q.agree || {}).author || '')}</span></div>`).join('')}
         </div>
-      </div>`;
-    }).join('') : '<div class="empty">아직 결성된 그룹이 없어요. 커피챗 후 합의서를 작성하면 여기에 나타나요.</div>';
+        ${g.lead.id === me.id ? '<p class="mute" style="margin-top:10px">새 전문성이 필요하면 ② 매칭에서 다른 연구자에게 같은 연구 주제로 요청을 보내면 그룹에 추가돼요.</p>' : ''}
+      </div>`).join('')
+      : '<div class="empty">아직 결성된 그룹이 없어요. 커피챗 후 합의서를 작성하면 여기에 나타나요.</div>';
 
-    /* 종료 */
     if (ended.length) {
       const tally = {};
-      ended.forEach(q => { const k = q.status === 'rej' ? '요청 거절' : q.endReason; tally[k] = (tally[k] || 0) + 1; });
+      ended.forEach(q => { const k = q.status === 'rej' ? `거절: ${q.endReason || '사유 없음'}` : q.endReason; tally[k] = (tally[k] || 0) + 1; });
       const max = Math.max(...Object.values(tally));
       $('#ended').innerHTML = `<div class="tally"><b>사유별 집계</b>${Object.entries(tally).sort((a, b) => b[1] - a[1]).map(([k, n]) =>
         `<div class="tally-r"><span>${e(k)}</span><span class="t"><i style="width:${(n / max) * 100}%"></i></span><b>${n}</b></div>`).join('')}</div>` +
-        ended.map(q => `<div class="end">${RD.avatar(q.who.name, q.who.id, 30)}<b>${e(q.who.name)}</b><span class="mute">${e(q.slot.tag)} · ${e(q.project.title)}</span>
-          <span class="why">${q.status === 'rej' ? '요청 거절' : e(q.endReason)}</span>${q.endMemo ? `<span class="memo">메모: ${e(q.endMemo)}</span>` : ''}</div>`).join('');
+        ended.map(q => { const o = other(q); return `<div class="end">${RD.avatar(o.name, o.id, 30)}<b>${e(o.name)}</b><span class="mute">${e(q.role || '')}${q.projectTitle ? ' · ' + e(q.projectTitle) : ''}</span>
+          <span class="why">${q.status === 'rej' ? '거절 · ' : ''}${e(q.endReason || '')}</span>${q.endMemo ? `<span class="memo">메모: ${e(q.endMemo)}</span>` : ''}</div>`; }).join('');
     } else {
       $('#ended').innerHTML = '<div class="empty">종료된 매칭이 없어요.</div>';
     }
+
+    document.querySelectorAll('[data-view]').forEach(b => {
+      b.onclick = () => { const p = prof(b.dataset.view); if (p) RD.openModal(RDProfileView.render(p)); };
+    });
   }
 
-  /* 버튼 동작 */
-  $('#active').addEventListener('click', ev => {
+  /* ---------- 버튼 동작 → 시트에 반영 ---------- */
+  document.querySelector('main').addEventListener('click', async ev => {
     const b = ev.target.closest('[data-act]');
     if (!b) return;
     const card = b.closest('.rq');
-    const id = card.dataset.id;
-    const q = RD.store.getRequests().find(x => x.id === id);
+    const q = requests.find(x => x.id === card.dataset.id);
     if (!q) return;
     const act = b.dataset.act;
-    if (act === 'accept') { RD.store.updateRequest(id, { status: 'acc' }); RD.toast(`${q.who.name}님이 수락했어요 · 커피챗을 잡아 보세요`); }
-    if (act === 'reject') { RD.store.updateRequest(id, { status: 'rej' }); RD.toast('거절된 요청으로 기록했어요'); }
+    if (act === 'showRej' || act === 'showEnd') { card.querySelector('.endbox').classList.toggle('hide'); return; }
+
+    let patch = null, msg = '';
+    if (act === 'accept') { patch = { status: 'acc', reply: card.querySelector('.r-reply').value.trim() }; msg = '수락했어요. 커피챗을 잡아 보세요'; }
+    if (act === 'reject') { patch = { status: 'rej', endReason: card.querySelector('.r-reason').value, reply: card.querySelector('.r-reply').value.trim() }; msg = '거절을 보냈어요'; }
     if (act === 'chat') {
       const date = card.querySelector('.c-date').value;
       if (!date) { RD.toast('날짜를 골라 주세요'); return; }
-      RD.store.updateRequest(id, { status: 'chat', chat: { date, time: card.querySelector('.c-time').value, mode: card.querySelector('.c-mode').value } });
-      RD.toast('커피챗 일정을 확정했어요');
+      patch = { status: 'chat', chat: { date, time: card.querySelector('.c-time').value, mode: card.querySelector('.c-mode').value } };
+      msg = '커피챗 일정을 확정했어요';
     }
-    if (act === 'showEnd') { card.querySelector('.endbox').classList.toggle('hide'); return; }
     if (act === 'group') {
-      RD.store.updateRequest(id, { status: 'group', agree: {
-        role: card.querySelector('.a-role').value.trim() || q.slot.tag,
-        period: card.querySelector('.a-period').value,
-        author: card.querySelector('.a-author').value } });
-      RD.toast('연구 그룹이 결성됐어요');
+      patch = { status: 'group', agree: { role: card.querySelector('.a-role').value.trim() || q.role,
+        period: card.querySelector('.a-period').value, author: card.querySelector('.a-author').value } };
+      msg = '연구 그룹이 결성됐어요';
     }
-    if (act === 'end') {
-      RD.store.updateRequest(id, { status: 'end', endReason: card.querySelector('.e-reason').value, endMemo: card.querySelector('.e-memo').value.trim() });
-      RD.toast('종료 사유를 기록했어요');
+    if (act === 'end') { patch = { status: 'end', endReason: card.querySelector('.e-reason').value, endMemo: card.querySelector('.e-memo').value.trim() }; msg = '종료 사유를 기록했어요'; }
+    if (!patch) return;
+
+    card.querySelectorAll('button').forEach(x => x.classList.add('busy'));
+    try {
+      await RD.api('updateRequest', { id: q.id, patch });
+      RD.toast(msg);
+      await load(true);
+    } catch (ex) {
+      RD.toast(ex.message);
+      card.querySelectorAll('button').forEach(x => x.classList.remove('busy'));
     }
-    draw();
   });
 
-  draw();
+  async function load(quiet) {
+    if (!quiet) ['#inbox', '#sent', '#groups', '#ended'].forEach(s => RD.loading($(s)));
+    try {
+      const [rq, pr] = await Promise.all([RD.api('listRequests'), RD.api('listProfiles')]);
+      requests = rq.requests.sort((a, b) => String(b.updated).localeCompare(String(a.updated)));
+      profiles = pr.profiles;
+      draw();
+    } catch (ex) {
+      RD.errorBox($('#inbox'), ex);
+    }
+  }
+
+  $('#reload').onclick = () => load();
+  load();
+  /* 30초마다 조용히 새로고침 (입력 중이 아닐 때만) */
+  setInterval(() => {
+    const typing = document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+    if (!document.hidden && !typing && !document.querySelector('.modal-bg')) load(true);
+  }, 30000);
 })();

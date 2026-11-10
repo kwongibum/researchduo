@@ -1,4 +1,4 @@
-/* 기능 1 · 프로필 화면 컴포넌트 스타일 — ② 매칭 모듈도 함께 사용 */
+/* 기능 1 · 프로필 화면 컴포넌트 스타일 — ②·③ 모듈도 함께 사용 */
 .pv{background:#fff;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
 .pv-cover{height:46px;background:var(--blue-t);position:relative}
 .pv-cover span{position:absolute;right:14px;top:12px;font-size:12px;font-weight:700;color:var(--blue)}
@@ -8,14 +8,14 @@
 .pv-nm b{font-size:18px;font-weight:800;margin-right:6px;letter-spacing:-0.03em}
 .pv-sub{font-size:13.5px;color:var(--sub);margin-top:1px}
 .pv-act{margin-left:auto;padding-top:32px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.pv-tabs{display:flex;gap:18px;padding:12px 18px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--mute);font-weight:600;overflow-x:auto}
-.pv-tabs span{padding-bottom:8px;white-space:nowrap}
-.pv-tabs .on{color:var(--ink);font-weight:800;box-shadow:inset 0 -2px 0 var(--ink)}
 .pv-rec{margin:14px 18px 0;background:var(--blue);color:#fff;border-radius:6px;padding:9px 12px;font-size:13.5px}
 .pv-rec b{font-weight:800}
-.pv-body{padding:14px 18px 4px;display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.pv-body{padding:16px 18px 4px;display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
 .pv-sec.full{grid-column:1/-1}
-.pv-lb{font-size:12px;font-weight:800;color:var(--mute);letter-spacing:.02em;margin-bottom:6px}
+.pv-lb{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--mute);letter-spacing:.02em;margin-bottom:7px}
+.pv-lb i{font-style:normal;color:var(--blue)}
+.tags.b span{background:var(--blue-t);color:var(--blue);font-weight:700}
+.pv-kw{font-size:13px;color:var(--sub);margin-top:6px}
 .pv-sk{display:grid;grid-template-columns:1fr 64px 34px;align-items:center;gap:8px;font-size:14px;margin-top:6px}
 .pv-skn{font-weight:700}
 .pv-skn small{font-weight:500;color:var(--mute);font-size:12px;margin-left:5px}
@@ -25,14 +25,27 @@
 .pv-lv{font-size:12.5px;color:var(--sub);text-align:right}
 .pv-ev{font-size:12.5px;color:var(--green);font-weight:700}
 .pv-ev.none{color:var(--mute);font-weight:500}
+.pv-need{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line2);font-size:13px}
+.pv-need > span:first-child{font-weight:700;color:var(--sub);margin-right:4px}
+.pv-need em{font-style:normal;font-weight:700;color:var(--warn);background:var(--warn-t);border-radius:4px;padding:2px 8px}
 .pv-none{font-size:13.5px;color:var(--mute)}
-.pv-intro{font-size:14px;color:var(--sub)}
+.pv-exp{display:flex;gap:16px}
+.pv-exp span{font-size:12.5px;color:var(--sub)}
+.pv-exp b{display:block;font-size:20px;font-weight:900;color:var(--ink);line-height:1.1}
+.pv-txt{font-size:14.5px;font-weight:700}
+.pv-intro{font-size:13.5px;color:var(--sub);margin-top:4px}
 .pv-cond{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px}
 .pv-cond b{color:var(--mute);font-weight:600;margin-right:5px;font-size:13px}
-.pv-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin-top:14px}
-.pv-stats div{padding:10px 4px;text-align:center;font-size:12px;color:var(--mute)}
-.pv-stats div + div{border-left:1px solid var(--line)}
-.pv-stats b{display:block;font-size:15px;color:var(--ink);font-weight:800}
+.pv-upd{font-size:12px;color:var(--mute);padding:10px 18px 14px;text-align:right}
+
+/* 목록용 작은 카드 */
+.pm{display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;cursor:pointer}
+.pm:hover{border-color:var(--ink)}
+.pm-b{min-width:0;flex:1}
+.pm-n b{font-size:15.5px;font-weight:800;margin-right:6px}
+.pm-s{font-size:13px;color:var(--sub);margin-bottom:6px}
+.pm-sk{font-size:12.5px;color:var(--sub);margin-top:6px}
+.pm-sk small{color:var(--blue);font-weight:700}
 @media (max-width:520px){
   .pv-body{grid-template-columns:1fr}
   .pv-id{flex-wrap:wrap}

@@ -1,92 +1,84 @@
-# 연구해듀오 (Research Duo) 프로토타입
+# 연구해듀오 (Research Duo) 프로토타입 v0.2
 
 > 필요한 전문성으로 공동 연구자를 찾고 연결하는 AI 기반 연구자 매칭 서비스
 > 과학기술학개론 조별 프로젝트
 
-- 사이트 주소: `https://<GitHub아이디>.github.io/<저장소이름>/` ← 배포 후 여기에 적어 두세요
-- 현재 버전: **v0.1** (변경 기록은 `core/common.js` 위쪽 `CHANGELOG`와 `docs/개선기록.md`)
+- 사이트: `https://kwongibum.github.io/researchduo/`
+- 데이터: 팀 구글 스프레드시트 `연구해듀오 DB` (회원 · 프로필 · 프로젝트 · 요청 탭)
+
+## v0.2에서 바뀐 점 (피드백 반영)
+- **로그인·회원가입**: 내 계정으로 프로필 관리
+- **프로필 공유**: 구글 스프레드시트에 저장 → 다른 컴퓨터에서도 보임 (교수님 피드백: 스프레드시트 사용)
+- **더미 연구자 18명 삭제** → 팀원 6명이 실제로 가입해서 프로필 작성
+- **매칭 카테고리 6개 (1인 1개 담당)**: 잘 되면 카테고리를 늘려 감
+- **받은 요청함**: 요청이 상대 화면에 도착하고, 상대가 직접 수락·거절
 
 ---
 
-## 1. 폴더 구조: 누가 어디를 고치나
+## 1. 전체 구조
 
 ```
-index.html                  홈 화면                         ← 공통 (팀장)
-core/                       공통 모듈                        ← 공통 (팀장, 고칠 때 팀에 공지)
-  ├─ style.css              색·글꼴·버튼·입력칸 등 공통 디자인
-  ├─ home.css               홈 화면 디자인
-  ├─ data.js                더미 연구자 18명·프로젝트 6개·시나리오·전문성 목록
-  └─ common.js              상단 메뉴, 하단, 테스트 메모, 모듈 간 데이터 저장소(RD.store)
+[GitHub Pages 사이트]  ⇄  [Apps Script]  ⇄  [구글 스프레드시트]
+   화면 (이 저장소)          작은 서버          회원·프로필·요청 저장
+```
+
+## 2. 폴더 구조: 누가 어디를 고치나
+
+```
+index.html                     홈                                   ← 공통 (팀장)
+core/                          공통                                 ← 공통 (팀장, 고칠 때 공지)
+  ├─ config.js                 ★ 서버 주소 (Apps Script 웹 앱 URL)
+  ├─ common.js                 상단 메뉴, 로그인 상태, 서버 요청(RD.api), 테스트 메모
+  ├─ data.js                   선택지 목록 (관심 주제, 역량, 계열, 목표 등)
+  └─ style.css / home.css      공통 디자인
+apps-script/Code.gs            구글 시트 서버 코드 (Apps Script에 붙여넣은 것과 같은 파일)
 features/
-  ├─ profile/   ① 연구 프로필                                ← 기능 1 담당
-  │    ├─ profile.html / profile.css / profile.js
-  │    └─ profile-view.js / profile-view.css  (프로필 화면 부품, ②도 가져다 씀)
-  ├─ matching/  ② 프로젝트 개설·AI 매칭                       ← 기능 2 담당
-  │    ├─ matching.html / matching.css / matching.js
-  │    └─ match.js           매칭 점수 규칙 (AI 역할을 대신함)
-  └─ connect/   ③ 요청·커피챗·그룹                           ← 기능 3 담당
-       └─ connect.html / connect.css / connect.js
-docs/개선기록.md             주간 발표용 문제·보완 기록
+  ├─ auth/      로그인·회원가입                                     ← 공통 (팀장)
+  ├─ profile/   ① 연구 프로필                                        ← 기능 1 담당
+  ├─ matching/  ② 매칭                                               ← 기능 2 담당
+  │    ├─ engine.js            카테고리 점수를 모아 총점 계산
+  │    └─ criteria/            ★ 매칭 카테고리 6개 (1인 1파일)
+  │         ├─ 1-topic.js       ① 연구 관심 주제     ← 담당 A
+  │         ├─ 2-skill.js       ② 연구 방법·역량     ← 담당 B
+  │         ├─ 3-experience.js  ③ 경험               ← 담당 C
+  │         ├─ 4-major.js       ④ 학과·전공          ← 담당 D
+  │         ├─ 5-goal.js        ⑤ 목표 성과          ← 담당 E
+  │         └─ 6-condition.js   ⑥ 협업 조건          ← 담당 F
+  └─ connect/   ③ 요청·커피챗·그룹                                    ← 기능 3 담당
+docs/개선기록.md                주간 발표용 문제·보완 기록
 ```
 
-**규칙: 각자 자기 `features/○○/` 폴더 안만 고치기.** 폴더가 겹치지 않으니 GitHub에서 합칠 때 충돌이 거의 나지 않아요.
+**규칙: 각자 자기 파일만 고치기.** 매칭 카테고리는 파일마다 맨 위 주석에 규칙이 적혀 있어요.
 
-## 2. 모듈끼리 연결되는 방법
+## 3. 매칭 카테고리 6개 (1차 규칙)
 
-세 모듈은 브라우저 저장소(localStorage)로 데이터를 주고받아요. 직접 저장하지 말고 `core/common.js`의 `RD.store` 함수를 쓰세요.
+| # | 카테고리 | 점수 규칙 (0~100) |
+|---|---|---|
+| ① | 연구 관심 주제 | 관심 주제가 겹치면 50점부터, 많이 겹칠수록 ↑, 같은 키워드 +15 |
+| ② | 연구 방법·역량 | 내가 필요한 역량을 상대가 가졌는가 70% + 상대가 필요한 걸 내가 가졌는가 30% (능숙 1.0 / 활용 0.8 / 기초 0.4 / 비슷한 분야 0.3) |
+| ③ | 경험 | 논문 30 · 학회 발표 20 · 프로젝트 10 · 역량 근거 5 (최대 100) |
+| ④ | 학과·전공 | 내 선호에 따라: 융합 선호면 다른 계열 100 / 같은 계열 60 / 같은 학과 30 |
+| ⑤ | 목표 성과 | 같은 목표 100 · 비슷한 목표 60 · 다름 0 |
+| ⑥ | 협업 조건 | 주당 시간 겹침 최대 60 + 협업 방식 맞음 40 |
 
-| 저장 이름 | 쓰는 모듈 | 읽는 모듈 | 함수 |
-|---|---|---|---|
-| `rd_profile` | ① 프로필 | ② (나에게 맞는 프로젝트), ③ (그룹 멤버 이름) | `RD.store.saveProfile()` / `getProfile()` |
-| `rd_project` | ② 매칭 | ② (다시 열 때), ③ (재매칭 버튼) | `RD.store.saveProject()` / `getProject()` |
-| `rd_requests` | ② 매칭 (요청 생성) | ③ (상태 변경) | `RD.store.addRequest()` / `getRequests()` / `updateRequest()` |
+- **총점** = 6개 카테고리의 평균. 매칭 화면에서 **중요**를 누르면 그 카테고리를 2배로 반영해요.
+- 배점은 1차 가설이에요. 테스트하면서 각 담당자가 규칙을 고쳐요.
+- **카테고리 추가 방법**: `criteria/7-이름.js` 파일을 만들고 `RDMatch.register({...})`를 부른 뒤, `matching.html`에 `<script>` 한 줄 추가
 
-- 요청 한 건의 모양(필드)은 `core/common.js` 맨 위 주석에 있어요. **필드 이름을 바꾸려면 ②·③ 담당자가 같이 정하기.**
-- ②는 ①의 `profile-view.js`(프로필 화면)를 가져다 써요. ① 담당자가 `RDProfileView.render()` 사용법을 바꾸면 ②에 알려 주세요.
-- 저장소는 **브라우저마다 따로**예요. 내 컴퓨터에서 만든 프로필은 다른 사람 화면에 안 보여요 (프로토타입 한계).
+## 4. 수정한 파일 올리기 (GitHub)
+1. 저장소에서 고칠 파일이 있는 폴더로 들어가기 (예: `features/matching/criteria`)
+2. **Add file → Upload files** → 고친 파일 끌어놓기 → **Commit changes**
+3. 1~2분 뒤 사이트 새로고침
 
-## 3. GitHub에 올리고 합치기
+## 5. 서버(Apps Script) 관련
+- 시트의 **확장 프로그램 → Apps Script**에 `apps-script/Code.gs`가 붙어 있어요.
+- 서버 코드를 고쳤다면: **배포 → 배포 관리 → 연필(수정) → 버전: 새 버전 → 배포** (URL은 그대로)
+- 시트에서 직접 행을 지우면 그 회원·프로필이 삭제돼요. `data` 칸은 사이트가 읽는 원본이라 직접 고치지 마세요.
+- 보안이 약한 프로토타입이에요. **다른 곳에서 쓰는 비밀번호는 쓰지 마세요.**
 
-### 처음 한 번 (팀장)
-1. GitHub에서 **New repository** → 이름 예: `research-duo` → **Public** → Create
-2. 저장소 화면에서 **uploading an existing file** 클릭 → 압축을 푼 폴더 **안의 내용 전체**(index.html, core, features, docs, README.md, .nojekyll)를 끌어다 놓기 → **Commit changes**
-3. **Settings → Collaborators → Add people** 로 팀원 초대
-4. **Settings → Pages** → Source: **Deploy from a branch** → Branch: **main**, 폴더 **/(root)** → Save
-5. 1~2분 뒤 `https://<아이디>.github.io/research-duo/` 에서 사이트 확인 → 이 README 맨 위 주소 칸에 적기
-
-### 각 담당자가 수정할 때
-**방법 A. 웹에서 바로 (가장 쉬움)**
-1. 저장소에서 내 파일 열기 (예: `features/profile/profile.js`) → 연필 아이콘(Edit)
-2. 수정 후 **Commit changes** → **Create a new branch for this commit and start a pull request** 선택 (브랜치 이름 예: `feature-1-profile`)
-3. **Pull request** 만들기 → 팀장이 확인하고 **Merge**
-
-**방법 B. GitHub Desktop (파일 여러 개를 고칠 때)**
-1. GitHub Desktop으로 저장소 Clone
-2. **Current branch → New branch** (`feature-1-profile` / `feature-2-matching` / `feature-3-connect`)
-3. VS Code 등에서 내 폴더 수정 → 크롬에서 `index.html`을 열어 확인
-4. Commit → **Push origin** → **Create Pull Request** → 팀장이 Merge
-
-### 합친 뒤 연결 확인 (매주 Merge 후 5분)
-- [ ] ①에서 프로필 저장 → ②의 ‘나에게 맞는 프로젝트’에 내 역량이 반영되는가
-- [ ] ②에서 협업 요청 → ③ ‘진행 중인 요청’에 나타나는가
-- [ ] ③에서 그룹 결성 → ‘필요 역량 추가 → 재매칭’ 버튼이 ②로 이어지는가
-- [ ] 화면 아래 **테스트 데이터 초기화** 후 처음부터 다시 해도 오류가 없는가
-
-## 4. 자주 고칠 곳
-
-| 하고 싶은 것 | 고칠 파일 |
-|---|---|
-| 더미 연구자·프로젝트 추가 / 수정 | `core/data.js` |
-| 전문성 목록·유사어 추가 (예: ‘Python’ → 머신러닝) | `core/data.js`의 `SKILLS` |
-| 매칭 점수 비중 바꾸기 (전문성 40 / 근거 20 / 목표 20 / 조건 20) | `features/matching/match.js`의 `WEIGHTS` |
-| 시나리오 추가 | `core/data.js`의 `SCENARIOS` |
-| 홈 화면의 ‘담당 · 이름’ 바꾸기 | `index.html` |
-| 버전·변경 기록 | `core/common.js`의 `VERSION`, `CHANGELOG` + `docs/개선기록.md` |
-
-## 5. 매주 발표 흐름
-
-1. **지난주 문제 → 이렇게 고쳤다** (둘째 주부터)
-2. 이번 주 핵심 기능 범위
-3. 프로토타입 시연: 홈의 **시나리오로 테스트하기**를 그대로 시연
-4. 발견한 문제점: 오른쪽 아래 **테스트 메모 → 표 형식으로 복사**한 내용을 정리
-5. 다음 주 보완 계획
+## 6. 매주 발표 흐름
+1. 지난주 문제 → 이렇게 고쳤다
+2. 이번 주 범위
+3. 시연: 팀원 계정으로 로그인 → 매칭 → 요청 → 상대 계정에서 수락
+4. 발견한 문제점 (오른쪽 아래 **테스트 메모 → 표 형식으로 복사**)
+5. 다음 주 계획

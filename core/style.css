@@ -34,7 +34,8 @@ button{font-family:inherit}
 .menu a{text-decoration:none;font-size:14.5px;font-weight:600;color:var(--sub);padding:7px 12px;border-radius:6px;white-space:nowrap}
 .menu a:hover{background:var(--bg);color:var(--ink)}
 .menu a.on{color:var(--ink);background:var(--bg);box-shadow:inset 0 -2px 0 var(--ink)}
-.ver{margin-left:auto;font-size:12px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:20px;padding:3px 10px;white-space:nowrap}
+.who{margin-left:auto;display:flex;align-items:center;gap:8px;flex:none;font-size:14px}
+.who-n{font-weight:700}
 
 /* ---------- 페이지 제목 ---------- */
 .ph{margin-bottom:24px}
@@ -140,9 +141,19 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--blue-t);border-c
   .wrap{padding:22px 16px 72px}
   .nav-in{padding:0 16px;gap:12px}
   .bw{display:none}
-  .ver{display:none}
+  .who-n{display:none}
   .ph h1{font-size:23px}
   .card{padding:18px}
   .grid3{grid-template-columns:1fr 1fr}
   .foot-in{padding:18px 16px 80px}
 }
+
+/* ---------- v0.2: 불러오기 · 오류 · 설정 경고 ---------- */
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:36px 16px;color:var(--sub);font-size:14px;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:var(--r)}
+.spin{width:16px;height:16px;border:2px solid var(--line2);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty.err{border-color:#f3c3a8;background:var(--warn-t);color:var(--warn)}
+.empty.err b{color:var(--warn)}
+.cfg-warn{background:#fff6d6;border-bottom:1px solid #f0d77a;color:#6b5300;font-size:13.5px;padding:9px 16px;text-align:center}
+.cfg-warn code{background:#fff;padding:1px 5px;border-radius:3px}
+.btn.busy{opacity:.6;pointer-events:none}

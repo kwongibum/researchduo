@@ -17,91 +17,82 @@
   <section class="hero">
     <div class="hero-in">
       <div class="hero-l">
-        <div class="kick">과학기술학개론 조별 프로젝트 · 프로토타입</div>
+        <div class="kick">과학기술학개론 조별 프로젝트 · 프로토타입 v0.2</div>
         <h1>인원수가 아니라<br><em>필요한 전문성</em>으로<br>공동 연구자를 찾아요</h1>
-        <p>융합 연구에 필요한 전문성을 ‘자리’로 등록하면, 그 자리에 맞는 연구자와 추천 이유를 보여주고 커피챗부터 연구 그룹 결성까지 이어줘요.</p>
-        <div class="btns">
-          <a class="btn pri" href="features/matching/matching.html">프로젝트 올리고 매칭받기</a>
-          <a class="btn" href="features/profile/profile.html">내 연구 프로필 만들기</a>
-        </div>
+        <p>내 연구 프로필을 만들면 매칭 카테고리 6개로 다른 연구자와 비교해서, 잘 맞는 사람을 추천하고 커피챗부터 연구 그룹까지 이어줘요.</p>
+        <div class="btns" id="cta"></div>
         <p class="naming">* ‘듀오’는 2인 제한이 아니라 ‘결혼해듀오’ 패러디예요. 필요한 만큼 팀이 자라요.</p>
       </div>
-      <div class="hero-r" id="heroDemo"></div>
+      <div class="hero-r">
+        <div class="demo-h"><span class="chip d">v0.2에서 바뀐 점</span></div>
+        <ul class="news">
+          <li><b>로그인</b> 내 계정으로 프로필 관리</li>
+          <li><b>프로필 공유</b> 구글 스프레드시트에 저장 → 다른 컴퓨터에서도 보임</li>
+          <li><b>실제 팀원으로 매칭</b> 더미 연구자 대신 팀원 6명의 프로필</li>
+          <li><b>매칭 카테고리 6개</b> 1인 1개씩 담당</li>
+          <li><b>받은 요청함</b> 요청이 상대 화면에 도착하고 직접 수락·거절</li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <div class="wrap">
     <section class="block">
-      <div class="bh"><h2>핵심 기능 3가지</h2><span class="mute">기능마다 담당자가 따로 만든 모듈을 하나로 합친 사이트예요</span></div>
+      <div class="bh"><h2>핵심 기능 3가지</h2><span class="mute">기능별 모듈을 담당자가 따로 만들어 하나로 합친 사이트예요</span></div>
       <div class="mods">
         <a class="mod" href="features/profile/profile.html">
-          <span class="mod-n">①</span>
-          <h3>연구 프로필</h3>
-          <p>학년 대신 실제 역량·근거·목표 성과·협업 조건을 입력해요.</p>
+          <span class="mod-n">①</span><h3>연구 프로필</h3>
+          <p>매칭 카테고리 6개 순서대로 관심 주제·역량·경험·전공·목표·조건을 입력해요. 저장하면 모든 팀원에게 보여요.</p>
           <span class="mod-o">담당 · 이름</span>
         </a>
         <a class="mod" href="features/matching/matching.html">
-          <span class="mod-n">②</span>
-          <h3>프로젝트 개설 · AI 매칭</h3>
-          <p>필요한 전문성을 자리로 등록하면 자리마다 추천 연구자와 점수·이유를 보여줘요. 반대로 나에게 맞는 프로젝트도 추천해요.</p>
+          <span class="mod-n">②</span><h3>AI 매칭</h3>
+          <p>내 프로필과 다른 연구자를 6개 카테고리로 비교해 점수·이유와 함께 추천해요. 중요한 카테고리는 2배로 반영할 수 있어요.</p>
           <span class="mod-o">담당 · 이름</span>
         </a>
         <a class="mod" href="features/connect/connect.html">
-          <span class="mod-n">③</span>
-          <h3>요청 · 커피챗 · 그룹</h3>
-          <p>협업 요청 → 수락 → 30분 커피챗 → 협업 합의서 → 연구 그룹. 실패하면 사유를 기록해요.</p>
+          <span class="mod-n">③</span><h3>요청 · 커피챗 · 그룹</h3>
+          <p>요청 → 상대가 수락 → 30분 커피챗 → 협업 합의서 → 연구 그룹. 실패하면 사유를 기록해요.</p>
           <span class="mod-o">담당 · 이름</span>
         </a>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="bh"><h2>매칭 카테고리 6개</h2><span class="mute">1인 1개씩 맡아 규칙을 만들고, 잘 되면 카테고리를 늘려가요</span></div>
+      <div class="cats">
+        <div class="cat"><span>①</span><b>연구 관심 주제</b><p>관심 주제·키워드가 겹치는가</p><em>담당 · 이름</em></div>
+        <div class="cat"><span>②</span><b>연구 방법·역량</b><p>내가 필요한 역량을 상대가 가졌는가</p><em>담당 · 이름</em></div>
+        <div class="cat"><span>③</span><b>경험</b><p>논문·학회·프로젝트 경험과 근거</p><em>담당 · 이름</em></div>
+        <div class="cat"><span>④</span><b>학과·전공</b><p>융합 / 같은 계열 선호에 맞는가</p><em>담당 · 이름</em></div>
+        <div class="cat"><span>⑤</span><b>목표 성과</b><p>같은 목표 · 비슷한 목표인가</p><em>담당 · 이름</em></div>
+        <div class="cat"><span>⑥</span><b>협업 조건</b><p>주당 시간·온오프라인 방식</p><em>담당 · 이름</em></div>
       </div>
     </section>
 
     <section class="block">
       <div class="bh"><h2>이용 흐름</h2></div>
       <ol class="flow">
-        <li><b>프로젝트 개설</b><span>연구 개요 + 필요 전문성 자리 + 목표 성과</span></li>
-        <li class="ai"><b>AI 양방향 매칭</b><span>프로젝트 → 연구자 · 연구자 → 프로젝트</span></li>
-        <li><b>협업 요청</b><span>캐스팅하거나 참여를 요청</span></li>
-        <li><b>Coffee Chat</b><span>30분 짧은 미팅으로 조율</span></li>
+        <li><b>회원가입·로그인</b><span>내 계정 만들기</span></li>
+        <li><b>연구 프로필 작성</b><span>카테고리 6개 순서로 입력</span></li>
+        <li class="ai"><b>AI 매칭</b><span>6개 카테고리 점수 + 이유</span></li>
+        <li><b>협업 요청 · 커피챗</b><span>상대가 수락하면 30분 미팅</span></li>
         <li><b>연구 그룹 결성</b><span>합의서 작성 후 그룹 생성</span></li>
       </ol>
-      <p class="loop">↻ 연구 중 새 전문성이 필요하면 <b>필요 역량만 추가해 재매칭</b>해요. 팀을 처음부터 다시 꾸리지 않아요.</p>
-    </section>
-
-    <section class="block">
-      <div class="bh"><h2>시나리오로 테스트하기</h2><span class="mute">팀이 작성한 시나리오를 그대로 불러와 매칭 결과를 확인해요</span></div>
-      <div class="scens" id="scens"></div>
     </section>
   </div>
 </main>
 
 <footer id="foot"></footer>
+<script src="core/config.js"></script>
 <script src="core/data.js"></script>
 <script src="core/common.js"></script>
-<script src="features/matching/match.js"></script>
 <script>
-  /* 홈: 시나리오 카드 + 오른쪽 예시 매칭 카드 */
   (() => {
-    const e = RD.esc;
-    document.getElementById('scens').innerHTML = Object.entries(SCENARIOS).map(([k, s]) => `
-      <a class="scn" href="features/matching/matching.html?s=${k}">
-        <span class="chip b">${e(s.label)}</span>
-        <h3>${e(s.project.title)}</h3>
-        <div class="scn-p">${e(s.persona)}</div>
-        <p><b>확인할 점</b> ${e(s.check)}</p>
-        <span class="scn-go">이 시나리오로 매칭해 보기 →</span>
-      </a>`).join('');
-
-    // 시나리오 4의 NLP 자리 매칭 결과 중 1위와 '근거 없음' 사례를 예시로 보여줌
-    const p = SCENARIOS[4].project;
-    const res = matchProject(p, RESEARCHERS)[0].results;
-    const pick = [res[0], res.find(m => m.r.id === 'r03')].filter(Boolean);
-    document.getElementById('heroDemo').innerHTML = `
-      <div class="demo-h"><span class="chip d">매칭 결과 예시</span><span>필요 전문성 · <b>NLP 모델링</b> (능숙 이상)</span></div>
-      ${pick.map((m, i) => `<div class="demo">
-        <div class="demo-top">${RD.avatar(m.r.name, m.r.id, 38)}<div><b>${e(m.r.name)}</b><span>${e(m.r.dept)} · ${e(m.r.degree)}</span></div><strong>${m.total}<small>/100</small></strong></div>
-        <ul>${(i === 0 ? m.reasons.slice(0, 3) : m.warns.slice(0, 2)).map(x => `<li class="${i === 0 ? 'ok' : 'wn'}">${e(x)}</li>`).join('')}</ul>
-      </div>`).join('')}
-      <p class="demo-c">같은 ‘PyTorch’ 경험이어도 <b>숙련도 근거</b>가 있는지에 따라 순위가 달라져요.</p>`;
+    const u = RD.session.user();
+    document.getElementById('cta').innerHTML = u
+      ? `<a class="btn pri" href="features/matching/matching.html">나와 맞는 연구자 보기</a><a class="btn" href="features/profile/profile.html">내 프로필</a>`
+      : `<a class="btn pri" href="features/auth/login.html#signup">회원가입하고 시작하기</a><a class="btn" href="features/auth/login.html">로그인</a>`;
   })();
 </script>
 </body>

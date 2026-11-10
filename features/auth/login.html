@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로그인 · 연구해듀오</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="../../core/style.css">
+<link rel="stylesheet" href="login.css">
+</head>
+<!-- ===== 로그인·회원가입 (공통 · 팀장 관리) ===== -->
+<body data-page="auth" data-root="../../">
+<header id="nav"></header>
+
+<main class="wrap">
+  <div class="auth">
+    <div class="auth-l">
+      <div class="kick">연구해듀오 프로토타입 v0.2</div>
+      <h1>로그인하면 내 프로필이<br><em>모든 팀원에게</em> 보여요</h1>
+      <p>프로필은 팀 구글 스프레드시트에 저장돼요. 다른 컴퓨터에서 로그인해도 같은 프로필과 요청을 볼 수 있어요.</p>
+      <ul class="auth-note">
+        <li>프로토타입이라 보안이 약해요. <b>다른 사이트에서 쓰는 비밀번호는 쓰지 마세요.</b></li>
+        <li>비밀번호는 시트에 암호화되어 저장돼요.</li>
+      </ul>
+    </div>
+
+    <div class="card auth-box">
+      <div class="atabs">
+        <button class="atab on" data-t="login">로그인</button>
+        <button class="atab" data-t="signup">회원가입</button>
+      </div>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="field"><label for="lu">아이디</label><input type="text" id="lu" autocomplete="username" placeholder="영문 소문자·숫자"></div>
+        <div class="field"><label for="lp">비밀번호</label><input type="password" id="lp" autocomplete="current-password"></div>
+        <p class="hint err hide" id="lerr"></p>
+        <button class="btn pri wide" type="submit">로그인</button>
+      </form>
+
+      <form id="signupForm" class="hide" autocomplete="off">
+        <div class="field"><label for="sn">이름 <small>프로필에 보이는 이름</small></label><input type="text" id="sn" placeholder="홍길동"></div>
+        <div class="field"><label for="su">아이디 <small>영문 소문자·숫자·_ 3~20자</small></label><input type="text" id="su" autocomplete="username"></div>
+        <div class="field"><label for="sp">비밀번호 <small>4자 이상</small></label><input type="password" id="sp" autocomplete="new-password"></div>
+        <div class="field"><label for="sp2">비밀번호 확인</label><input type="password" id="sp2" autocomplete="new-password"></div>
+        <p class="hint err hide" id="serr"></p>
+        <button class="btn pri wide" type="submit">가입하고 시작하기</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer id="foot"></footer>
+<script src="../../core/config.js"></script>
+<script src="../../core/data.js"></script>
+<script src="../../core/common.js"></script>
+<script src="login.js"></script>
+</body>
+</html>

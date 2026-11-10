@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>③ 요청·커피챗·그룹 · 연구해듀오</title>
+<title>③ 요청·그룹 · 연구해듀오</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="../../core/style.css">
+<link rel="stylesheet" href="../profile/profile-view.css">
 <link rel="stylesheet" href="connect.css">
 </head>
 <!-- ===== 기능 3 · 요청·커피챗·그룹 (담당: 이름을 적어주세요) ===== -->
@@ -16,14 +17,19 @@
   <div class="ph">
     <div class="kick">기능 3 · 연결</div>
     <h1>협업 요청부터 연구 그룹까지</h1>
-    <p>요청 → 수락 → 30분 커피챗 → 협업 합의서 → 연구 그룹 순서로 진행돼요. 프로토타입에서는 상대방의 응답을 <b>시뮬레이션 버튼</b>으로 대신해요.</p>
+    <p>요청 → 수락 → 30분 커피챗 → 협업 합의서 → 연구 그룹. 이제 요청이 <b>상대방 화면에 실제로 도착</b>하고, 상대가 직접 수락·거절해요.</p>
   </div>
 
   <div class="stats" id="stats"></div>
 
   <section class="sec">
-    <div class="sec-h"><h2>진행 중인 요청</h2></div>
-    <div id="active"></div>
+    <div class="sec-h"><h2>받은 요청</h2><span class="mute">나에게 협업을 요청한 연구자</span><button class="linkbtn" id="reload">새로고침</button></div>
+    <div id="inbox"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h"><h2>보낸 요청</h2><span class="mute">내가 협업을 요청한 연구자</span></div>
+    <div id="sent"></div>
   </section>
 
   <section class="sec">
@@ -38,8 +44,10 @@
 </main>
 
 <footer id="foot"></footer>
+<script src="../../core/config.js"></script>
 <script src="../../core/data.js"></script>
 <script src="../../core/common.js"></script>
+<script src="../profile/profile-view.js"></script>
 <script src="connect.js"></script>
 </body>
 </html>
