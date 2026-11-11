@@ -40,6 +40,7 @@
       ${RD.avatar(o.name, o.id, 42)}
       <div class="rq-who"><b>${e(o.name)}</b><div class="sub">${e(sub)}</div></div>
       <div class="rq-meta"><span class="chip ${q.fromId === me.id ? 'b' : 'g'}">${q.fromId === me.id ? '내가 보냄' : '나에게 옴'}</span>
+        ${q.kind === 'apply' ? '<span class="chip">프로젝트 참여 요청</span>' : q.kind === 'cast' ? '<span class="chip">프로젝트 초대</span>' : ''}
         <span class="chip">${e(q.role || '협업')}</span>${q.score != null ? `<span class="chip d">매칭 ${e(q.score)}점</span>` : ''}
         ${p ? `<button class="linkbtn" data-view="${e(o.id)}">프로필</button>` : ''}</div>
     </div>
@@ -79,7 +80,7 @@
         <div class="chat-info"><b>커피챗 예정</b> ${e(c.date)} ${e(c.time)} · ${e(c.mode)} · 30분 ${q.updatedBy ? `<span class="mute">(${e(q.updatedBy)} 확정)</span>` : ''}</div>
         <div class="agree-h">협업 합의서 <span class="mute">커피챗에서 정한 내용을 기록해요</span></div>
         <div class="grid3">
-          <div><span class="lbl">${e(q.toName)}님의 역할</span><input type="text" class="a-role" value="${e(q.role || '')}"></div>
+          <div><span class="lbl">${e(q.kind === 'apply' ? q.fromName : q.toName)}님의 역할</span><input type="text" class="a-role" value="${e(q.role || '')}"></div>
           <div><span class="lbl">협업 기간</span><select class="a-period">${opt(PERIODS, '2주 단기 협업')}</select></div>
           <div><span class="lbl">저자 순서</span><select class="a-author">${opt(AUTHORS, q.role === '공동 연구자' ? '공동 1저자' : '2저자 이하 공동저자')}</select></div>
         </div>
@@ -119,18 +120,21 @@
     /* 그룹: 요청을 보낸 사람(개설자) + 연구 주제 기준으로 묶기 */
     const map = {};
     groups.forEach(q => {
-      const k = q.fromId + '|' + (q.projectTitle || q.toId);
-      (map[k] = map[k] || { title: q.projectTitle || `${q.fromName} × ${q.toName} 공동 연구`, lead: { id: q.fromId, name: q.fromName }, ms: [] }).ms.push(q);
+      // 참여 요청(apply)은 받은 사람이 개설자, 나머지는 보낸 사람이 개설자
+      const lead = q.kind === 'apply' ? { id: q.toId, name: q.toName } : { id: q.fromId, name: q.fromName };
+      const mem = q.kind === 'apply' ? { id: q.fromId, name: q.fromName } : { id: q.toId, name: q.toName };
+      const k = lead.id + '|' + (q.projectTitle || mem.id);
+      (map[k] = map[k] || { title: q.projectTitle || `${lead.name} × ${mem.name} 공동 연구`, lead, ms: [] }).ms.push({ ...q, mem });
     });
     const gl = Object.values(map);
     $('#groups').innerHTML = gl.length ? gl.map(g => `<div class="grp">
         <div class="grp-h"><div><span class="chip g">Research Group · ${g.ms.length + 1}명</span><h3>${e(g.title)}</h3></div></div>
         <div class="members">
           <div class="mem mem-head"><span></span><span>이름</span><span>역할</span><span class="hide-s">기간</span><span class="hide-s">저자 순서</span></div>
-          <div class="mem">${RD.avatar(g.lead.name, g.lead.id, 32)}<b>${e(g.lead.name)}${g.lead.id === me.id ? ' (나)' : ''}</b><span>요청한 연구자</span><span class="hide-s">—</span><span class="hide-s">—</span></div>
-          ${g.ms.map(q => `<div class="mem">${RD.avatar(q.toName, q.toId, 32)}<b>${e(q.toName)}${q.toId === me.id ? ' (나)' : ''}</b><span>${e((q.agree || {}).role || q.role)}</span><span class="hide-s">${e((q.agree || {}).period || '')}</span><span class="hide-s">${e((q.agree || {}).author || '')}</span></div>`).join('')}
+          <div class="mem">${RD.avatar(g.lead.name, g.lead.id, 32)}<b>${e(g.lead.name)}${g.lead.id === me.id ? ' (나)' : ''}</b><span>${g.ms.some(q => q.projectId) ? '프로젝트 개설자' : '요청한 연구자'}</span><span class="hide-s">—</span><span class="hide-s">—</span></div>
+          ${g.ms.map(q => `<div class="mem">${RD.avatar(q.mem.name, q.mem.id, 32)}<b>${e(q.mem.name)}${q.mem.id === me.id ? ' (나)' : ''}</b><span>${e((q.agree || {}).role || q.role)}</span><span class="hide-s">${e((q.agree || {}).period || '')}</span><span class="hide-s">${e((q.agree || {}).author || '')}</span></div>`).join('')}
         </div>
-        ${g.lead.id === me.id ? '<p class="mute" style="margin-top:10px">새 전문성이 필요하면 ② 매칭에서 다른 연구자에게 같은 연구 주제로 요청을 보내면 그룹에 추가돼요.</p>' : ''}
+        ${g.lead.id === me.id ? `<p class="mute" style="margin-top:10px">새 전문성이 필요하면 <a href="../matching/project.html">② 프로젝트</a>에서 자리를 추가하고 다른 연구자를 초대하면 이 그룹에 추가돼요.</p>` : ''}
       </div>`).join('')
       : '<div class="empty">아직 결성된 그룹이 없어요. 커피챗 후 합의서를 작성하면 여기에 나타나요.</div>';
 

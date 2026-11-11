@@ -48,7 +48,8 @@
   }
 
   function reqStatus(uid) {
-    const q = requests.find(r => (r.fromId === me.id && r.toId === uid) || (r.toId === me.id && r.fromId === uid));
+    // 프로젝트 초대·참여 요청은 제외하고 개인 간 요청만
+    const q = requests.find(r => !r.projectId && ((r.fromId === me.id && r.toId === uid) || (r.toId === me.id && r.fromId === uid)));
     return q ? q.status : null;
   }
 
