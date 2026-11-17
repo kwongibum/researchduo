@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>팀 공간 · 연구해듀오</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="../../core/style.css">
+<link rel="stylesheet" href="../profile/profile-view.css">
+<link rel="stylesheet" href="../matching/matching.css">
+<link rel="stylesheet" href="team.css">
+</head>
+<!-- ===== 기능 3 · 팀 공간 (담당: 이름을 적어주세요) ===== -->
+<body data-page="connect" data-root="../../">
+<header id="nav"></header>
+
+<main class="wrap">
+  <a class="back" href="connect.html">← 요청·팀으로</a>
+  <div id="head"></div>
+
+  <div class="tgrid" id="body">
+    <div class="tmain">
+      <section class="card" id="slotsCard"></section>
+      <section class="card" id="membersCard"></section>
+      <section class="card" id="applicants"></section>
+      <section class="card hide" id="reviewsCard"></section>
+    </div>
+    <aside class="tside">
+      <section class="card chat" id="chatCard">
+        <div class="card-h"><h2>팀 메시지</h2><span class="mute" id="chatState"></span></div>
+        <div id="chatLink"></div>
+        <div class="msgs" id="msgs"></div>
+        <form id="msgForm" class="msg-form" autocomplete="off">
+          <textarea id="msgText" rows="2" placeholder="팀원에게 남길 말 (Enter 보내기 · Shift+Enter 줄바꿈)"></textarea>
+          <button class="btn pri sm" type="submit">보내기</button>
+        </form>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<footer id="foot"></footer>
+<script src="../../core/config.js"></script>
+<script src="../../core/data.js"></script>
+<script src="../../core/common.js"></script>
+<script src="../../core/team-kit.js"></script>
+<script src="../profile/profile-view.js"></script>
+<script src="../matching/engine.js"></script>
+<script src="../matching/criteria/1-topic.js"></script>
+<script src="../matching/criteria/2-skill.js"></script>
+<script src="../matching/criteria/3-experience.js"></script>
+<script src="../matching/criteria/4-major.js"></script>
+<script src="../matching/criteria/5-goal.js"></script>
+<script src="../matching/criteria/6-condition.js"></script>
+<script src="team.js"></script>
+</body>
+</html>

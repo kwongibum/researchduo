@@ -63,6 +63,33 @@ const GOAL_GROUP = {
 
 /* 5. 협업 조건 — 매칭 카테고리 ⑥ */
 const MODES = ['온라인', '오프라인', '블렌디드'];
-const DEGREES = ['학부', '석사', '박사'];
+const DEGREES = ['학부', '석사', '박사', '교수'];
 const COLLAB_TYPES = ['아이디어 논의', '방법론 자문', '공동 프로젝트', '논문 작성'];
 const ROLES = ['공동 연구자', '방법론 자문', '데이터·실험 지원', '아이디어 토론'];
+
+/* 6. 회원 구분 · 연구 경험 단계 (v0.3) — 숫자 레벨 대신 중립적인 표현
+      ★ 단계 이름(label)은 팀 논의 후 확정해서 여기만 바꾸면 돼요. */
+const MEMBER_TYPES = { '학부': '학부생', '석사': '대학원생', '박사': '대학원생', '교수': '교수' };
+const EXP_STAGES = [
+  { min: 0, label: '탐색', desc: '연구 경험을 쌓아가는 단계' },
+  { min: 3, label: '참여', desc: '연구에 참여해 본 경험이 있는 단계' },
+  { min: 8, label: '주도', desc: '연구를 이끌어 본 경험이 많은 단계' },
+];
+function memberType(p) { return MEMBER_TYPES[(p && p.degree) || ''] || '회원'; }
+/* 경험 점수 = 논문×3 + 학회 발표×2 + 연구 프로젝트×1 + 완료한 협업×2 */
+function expPoints(p) {
+  const x = (p && p.exp) || {}, a = (p && p.activity) || {};
+  return (+x.papers || 0) * 3 + (+x.talks || 0) * 2 + (+x.projects || 0) + (+a.completed || 0) * 2;
+}
+function expStage(p) {
+  const pt = expPoints(p);
+  return EXP_STAGES.filter(s => pt >= s.min).pop();
+}
+
+/* 7. 협업 후기 키워드 */
+const REVIEW_KEYWORDS = ['응답이 빨라요', '분석이 꼼꼼해요', '일정을 잘 지켜요', '아이디어가 많아요', '설명이 친절해요', '책임감이 강해요', '자료 정리를 잘해요'];
+
+/* 8. 프로젝트 팀 상태 · 커피챗 · 거절 사유 */
+const TEAM_STATUS = ['모집 중', '진행 중', '완료'];
+const REJECT_REASONS = ['지금은 시간이 없어요', '연구 주제가 맞지 않아요', '요청한 역할을 하기 어려워요', '이미 다른 팀에 참여 중이에요', '기타'];
+const PERIODS = ['1회 자문', '2주 단기 협업', '한 달', '한 학기'];

@@ -27,6 +27,20 @@ const RDProfileView = (() => {
     const b = [r.degree, r.semester].filter(Boolean).join(' ');
     return [a, b].filter(Boolean).join(' · ');
   }
+  /* v0.3 회원 구분 + 연구 경험 단계 배지 (core/data.js 의 memberType·expStage) */
+  function badges(r) {
+    const st = expStage(r);
+    return `<span class="mbadge t-${e(memberType(r))}">${e(memberType(r))}</span>${st ? `<span class="mbadge stage" title="${e(st.desc)}">연구 경험 · ${e(st.label)}</span>` : ''}`;
+  }
+  function activity(r) {
+    const a = r.activity || {};
+    const kws = Object.entries(a.keywords || {}).sort((x, y) => y[1] - x[1]).slice(0, 4);
+    return `<div class="pv-stats">
+        <div><b>${+a.teams || 0}개</b>참여 중인 팀</div>
+        <div><b>${+a.completed || 0}건</b>완료한 협업</div>
+        <div><b>${kws.length ? kws.map(([k, n]) => `“${e(k)}”${n > 1 ? ' ×' + n : ''}`).join(' ') : '—'}</b>받은 후기</div>
+      </div>`;
+  }
   function tags(list, cls = '') {
     return arr(list).length ? `<div class="tags ${cls}">${arr(list).map(i => `<span>${e(i)}</span>`).join('')}</div>` : '<div class="pv-none">—</div>';
   }
@@ -39,7 +53,7 @@ const RDProfileView = (() => {
       <div class="pv-id">
         ${RD.avatar(r.name || '?', r.userId || r.name, 60)}
         <div class="pv-nm">
-          <b>${e(r.name || '이름')}</b>
+          <b>${e(r.name || '이름')}</b>${badges(r)}
           ${r.available === false ? '<span class="chip">참여 어려움</span>' : '<span class="chip g">● 참여 가능</span>'}
           <div class="pv-sub">${e(subline(r) || '학교 · 학과 · 과정')}</div>
         </div>
@@ -87,6 +101,7 @@ const RDProfileView = (() => {
         </div>
         ${r.intro ? `<div class="pv-sec full"><div class="pv-lb">관심 연구 소개</div><p class="pv-intro">${e(r.intro)}</p></div>` : ''}
       </div>
+      ${activity(r)}
       ${r.updated ? `<div class="pv-upd">마지막 수정 ${e(r.updated)}</div>` : ''}
     </div>`;
   }
@@ -95,7 +110,7 @@ const RDProfileView = (() => {
     return `<div class="pm" data-uid="${e(r.userId)}">
       ${RD.avatar(r.name, r.userId, 44)}
       <div class="pm-b">
-        <div class="pm-n"><b>${e(r.name)}</b>${r.available === false ? '<span class="chip">참여 어려움</span>' : ''}</div>
+        <div class="pm-n"><b>${e(r.name)}</b>${badges(r)}${r.available === false ? '<span class="chip">참여 어려움</span>' : ''}</div>
         <div class="pm-s">${e(subline(r))}</div>
         <div class="tags b">${arr(r.topics).slice(0, 3).map(t => `<span>${e(t)}</span>`).join('')}</div>
         <div class="pm-sk">${arr(r.skills).filter(s => s.tag).slice(0, 4).map(s => `${e(s.tag)} <small>${LEVELS[s.level] || ''}</small>`).join(' · ')}</div>
@@ -104,5 +119,5 @@ const RDProfileView = (() => {
     </div>`;
   }
 
-  return { render, mini };
+  return { render, mini, badges };
 })();

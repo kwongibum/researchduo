@@ -50,3 +50,11 @@
   .mc-why{grid-template-columns:1fr}
   .mc-score b{font-size:24px}
 }
+
+/* v0.3: 회원 구분 필터 */
+.tfilter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tfilter button{border:1px solid var(--line2);background:#fff;border-radius:16px;padding:5px 12px;font-size:13.5px;font-weight:700;cursor:pointer;color:var(--sub)}
+.tfilter button small{margin-left:4px;color:var(--mute);font-weight:600}
+.tfilter button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.tfilter button.on small{color:#c9ccd6}
+.mc-act{align-items:center;flex-wrap:wrap}

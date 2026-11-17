@@ -20,8 +20,18 @@
 
 const RD = (() => {
   /* ---- 버전 기록: 매주 고친 내용을 여기에 추가하세요 ---- */
-  const VERSION = 'v0.2';
+  const VERSION = 'v0.3';
   const CHANGELOG = [
+    { v: 'v0.3', date: '2026-11-17', items: [
+      '킬러 기능 정의: 필요 전문성 자리 → 기여 의향 지원 → 지원자 비교·선택 → 팀 공간에서 확장·소통 → 완료·후기',
+      '참여 요청·초대 수락 시 기여 의향서 (맡고 싶은 자리, 기여 내용, 시간·기간, 동기·계획)',
+      '지원자 비교 화면 (매칭 점수·카테고리 점수·기여 의향 나란히)',
+      '그룹 = 프로젝트 팀으로 통합, 요청 시 대상 팀 선택, 팀원 누구나 초대',
+      '팀 공간: 자리 현황·멤버 추가 추천·공개/비공개·팀 메시지·완료·후기',
+      '커피챗 양방향 조율 (후보 제안 → 선택 또는 역제안)',
+      '거절 사유 직접 작성',
+      '회원 구분 배지(학부생/대학원생/교수)와 연구 경험 단계 (숫자 레벨 대신 중립적 표현)',
+    ] },
     { v: 'v0.2', date: '2026-11-10', items: [
       '로그인·회원가입 추가',
       '프로필을 구글 스프레드시트에 저장 → 다른 컴퓨터에서도 보임',
@@ -40,7 +50,7 @@ const RD = (() => {
     { key: 'home',     href: 'index.html',                      label: '홈' },
     { key: 'profile',  href: 'features/profile/profile.html',   label: '① 연구 프로필' },
     { key: 'matching', href: 'features/matching/matching.html', label: '② 매칭' },
-    { key: 'connect',  href: 'features/connect/connect.html',   label: '③ 요청·그룹' },
+    { key: 'connect',  href: 'features/connect/connect.html',   label: '③ 요청·팀' },
   ];
   const url = href => root + href;
 

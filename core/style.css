@@ -157,3 +157,30 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--blue-t);border-c
 .cfg-warn{background:#fff6d6;border-bottom:1px solid #f0d77a;color:#6b5300;font-size:13.5px;padding:9px 16px;text-align:center}
 .cfg-warn code{background:#fff;padding:1px 5px;border-radius:3px}
 .btn.busy{opacity:.6;pointer-events:none}
+
+/* ---------- v0.3: 배지 · 기여 의향 · 팀 상태 ---------- */
+.mbadge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;border-radius:10px;padding:1px 8px;margin-left:4px;vertical-align:2px;white-space:nowrap;border:1px solid var(--line2);color:var(--sub);background:#fff}
+.mbadge.t-학부생{border-color:#c9d6ff;color:var(--blue);background:var(--blue-t)}
+.mbadge.t-대학원생{border-color:#b9e6d7;color:var(--green);background:var(--green-t)}
+.mbadge.t-교수{border-color:var(--ink);color:#fff;background:var(--ink)}
+.mbadge.stage{font-weight:700}
+.intent{background:var(--bg);border-radius:8px;padding:12px 14px;margin:6px 0 12px}
+.intent-h{font-size:14px;font-weight:800;margin-bottom:10px}
+.intent-h small{display:block;font-weight:500;color:var(--sub);font-size:12.5px;margin-top:2px}
+.intent-h small b{color:var(--ink)}
+.intent .field{margin-bottom:10px}
+.intent-v{background:#fff;border:1px solid var(--line);border-left:3px solid var(--green);border-radius:6px;padding:9px 12px;margin-top:10px;font-size:13.5px}
+.intent-v .iv-h{font-size:12px;font-weight:800;color:var(--green);margin-bottom:4px}
+.intent-v div b{display:inline-block;min-width:66px;color:var(--mute);font-weight:700;font-size:12.5px;margin-right:6px}
+.tstat{display:inline-flex;font-size:12px;font-weight:800;border-radius:4px;padding:2px 8px;white-space:nowrap}
+.tstat.recruit{background:var(--blue-t);color:var(--blue)}
+.tstat.active{background:var(--green-t);color:var(--green)}
+.tstat.done{background:var(--ink);color:#fff}
+.fits{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.fit{font-size:12.5px;font-weight:700;border-radius:4px;padding:3px 8px;background:var(--bg);color:var(--mute)}
+.fit.ok{background:var(--green-t);color:var(--green)}
+.fit.low{background:var(--warn-t);color:var(--warn)}
+.fit.rel{background:var(--blue-t);color:var(--blue)}
+.kwsel{display:flex;flex-wrap:wrap;gap:6px}
+.kwsel button{border:1px solid var(--line2);background:#fff;border-radius:16px;padding:5px 11px;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer}
+.kwsel button.on{background:var(--green);border-color:var(--green);color:#fff}

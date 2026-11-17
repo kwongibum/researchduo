@@ -72,3 +72,26 @@
 .stat.hot b{color:var(--blue)}
 .endbox .lbl{display:block}
 .sec-h .linkbtn{margin-left:auto}
+
+/* v0.3: 대상 팀 · 커피챗 후보 · 내 팀 */
+.rq-team{font-size:13.5px;color:var(--sub);margin-top:8px;padding:6px 10px;background:var(--blue-t);border-radius:6px}
+.rq-team b{color:var(--blue)}
+.rq-team a{color:var(--blue);font-weight:700}
+.props{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.prop{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:6px;padding:8px 12px;font-size:14px;cursor:pointer;background:#fff}
+.prop:has(input:checked){border-color:var(--blue);background:var(--blue-t)}
+.prop input{accent-color:var(--blue)}
+.propose{margin-top:8px}
+.prop-row{margin-bottom:8px}
+.teams{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.teams > .empty{grid-column:1/-1}
+.tcard{display:flex;flex-direction:column;gap:8px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;text-decoration:none}
+.tcard:hover{border-color:var(--ink)}
+.tc-top{display:flex;gap:5px;flex-wrap:wrap}
+.tcard h3{font-size:16px;font-weight:800;letter-spacing:-0.03em;line-height:1.4}
+.tc-ppl{display:flex;align-items:center;gap:2px}
+.tc-ppl .av{border:2px solid #fff;margin-right:-6px}
+.tc-ppl span{margin-left:12px;font-size:12.5px;color:var(--sub)}
+.tc-go{font-size:13px;font-weight:700;color:var(--blue);margin-top:auto}
+@media (max-width:900px){ .teams{grid-template-columns:1fr 1fr} }
+@media (max-width:560px){ .teams{grid-template-columns:1fr} }

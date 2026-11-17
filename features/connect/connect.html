@@ -3,42 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>③ 요청·그룹 · 연구해듀오</title>
+<title>③ 요청·팀 · 연구해듀오</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="../../core/style.css">
 <link rel="stylesheet" href="../profile/profile-view.css">
 <link rel="stylesheet" href="connect.css">
 </head>
-<!-- ===== 기능 3 · 요청·커피챗·그룹 (담당: 이름을 적어주세요) ===== -->
+<!-- ===== 기능 3 · 요청·커피챗·팀 (담당: 이름을 적어주세요) ===== -->
 <body data-page="connect" data-root="../../">
 <header id="nav"></header>
 
 <main class="wrap">
   <div class="ph">
     <div class="kick">기능 3 · 연결</div>
-    <h1>협업 요청부터 연구 그룹까지</h1>
-    <p>요청 → 수락 → 30분 커피챗 → 협업 합의서 → 연구 그룹. 이제 요청이 <b>상대방 화면에 실제로 도착</b>하고, 상대가 직접 수락·거절해요.</p>
+    <h1>요청부터 프로젝트 팀까지</h1>
+    <p>초대·참여 요청 → 수락(기여 의향서) → <b>양쪽이 조율하는</b> 30분 커피챗 → 협업 합의서 → 프로젝트 팀 합류. 팀에 합류하면 <b>팀 공간</b>에서 함께 일해요.</p>
   </div>
 
   <div class="stats" id="stats"></div>
 
   <section class="sec">
-    <div class="sec-h"><h2>받은 요청</h2><span class="mute">나에게 협업을 요청한 연구자</span><button class="linkbtn" id="reload">새로고침</button></div>
+    <div class="sec-h"><h2>받은 요청</h2><span class="mute">나에게 온 초대 · 내 팀에 온 참여 요청</span><button class="linkbtn" id="reload">새로고침</button></div>
     <div id="inbox"></div>
   </section>
 
   <section class="sec">
-    <div class="sec-h"><h2>보낸 요청</h2><span class="mute">내가 협업을 요청한 연구자</span></div>
+    <div class="sec-h"><h2>보낸 요청</h2><span class="mute">내가 보낸 초대 · 참여 요청</span></div>
     <div id="sent"></div>
   </section>
 
   <section class="sec">
-    <div class="sec-h"><h2>연구 그룹</h2><span class="mute">합의서를 작성하면 그룹이 만들어져요</span></div>
-    <div id="groups"></div>
+    <div class="sec-h"><h2>내 프로젝트 팀</h2><span class="mute">여러 팀을 동시에 진행할 수 있어요</span></div>
+    <div id="teams" class="teams"></div>
   </section>
 
   <section class="sec">
-    <div class="sec-h"><h2>종료된 매칭과 사유</h2><span class="mute">매칭이 왜 실패했는지 모으면 개선 포인트가 돼요</span></div>
+    <div class="sec-h"><h2>종료된 요청과 사유</h2><span class="mute">거절·중단 사유를 모으면 개선 포인트가 돼요</span></div>
     <div id="ended"></div>
   </section>
 </main>
@@ -47,6 +47,7 @@
 <script src="../../core/config.js"></script>
 <script src="../../core/data.js"></script>
 <script src="../../core/common.js"></script>
+<script src="../../core/team-kit.js"></script>
 <script src="../profile/profile-view.js"></script>
 <script src="connect.js"></script>
 </body>
