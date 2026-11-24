@@ -2,7 +2,7 @@
    연구해듀오 — 공통 모듈 (core/common.js)
    모든 페이지가 불러와요. 팀 전체가 같이 쓰므로 고칠 때는 팀에 먼저 알려주세요.
 
-   ★ v0.2부터 데이터는 구글 스프레드시트(Apps Script)에 저장돼요.
+   ★ v0.4부터 데이터는 Vercel 서버 함수 + Postgres 에 저장돼요 (/api/rpc).
      모듈에서는 직접 fetch 하지 말고 RD.api('요청이름', {...}) 를 쓰세요.
 
    서버 요청 목록 (자세한 내용은 apps-script/Code.gs)
@@ -20,8 +20,14 @@
 
 const RD = (() => {
   /* ---- 버전 기록: 매주 고친 내용을 여기에 추가하세요 ---- */
-  const VERSION = 'v0.3';
+  const VERSION = 'v0.4';
   const CHANGELOG = [
+    { v: 'v0.4', date: '2026-11-24', items: [
+      '백엔드를 구글 시트 → Vercel 서버 + Postgres 로 이전 (속도 개선)',
+      '보안 강화: 가입 시 동의, 실명 대신 닉네임, 프로필 공개범위(전체/적합도 높을 때만/비공개)',
+      '매칭은 적합도 임계값 이상만 기본 노출 (조건 없는 열람 방지)',
+      '비밀번호 변경·닉네임 변경 추가',
+    ] },
     { v: 'v0.3', date: '2026-11-17', items: [
       '킬러 기능 정의: 필요 전문성 자리 → 기여 의향 지원 → 지원자 비교·선택 → 팀 공간에서 확장·소통 → 완료·후기',
       '참여 요청·초대 수락 시 기여 의향서 (맡고 싶은 자리, 기여 내용, 시간·기간, 동기·계획)',
@@ -87,7 +93,7 @@ const RD = (() => {
       throw new Error('서버에 연결하지 못했어요. 인터넷 연결이나 서버 주소를 확인해 주세요.');
     }
     let data;
-    try { data = await res.json(); } catch (e) { throw new Error('서버 응답을 읽지 못했어요. Apps Script 배포 설정(모든 사용자)을 확인해 주세요.'); }
+    try { data = await res.json(); } catch (e) { throw new Error('서버 응답을 읽지 못했어요. 잠시 후 다시 시도해 주세요.'); }
     if (!data.ok) {
       if (/로그인이 (필요|만료)/.test(data.error || '')) session.clear();
       throw new Error(data.error || '알 수 없는 오류가 발생했어요');
@@ -186,7 +192,7 @@ const RD = (() => {
     if (foot) {
       foot.className = 'foot';
       foot.innerHTML = `<div class="foot-in">
-        <div><b>연구해듀오 프로토타입 ${VERSION}</b> · 과학기술학개론 조별 프로젝트 · 데이터는 팀 구글 스프레드시트에 저장돼요</div>
+        <div><b>연구해듀오 프로토타입 ${VERSION}</b> · 과학기술학개론 조별 프로젝트 · 데이터는 팀 서버(Vercel + Postgres)에 저장돼요</div>
         <details class="clog"><summary>변경 기록</summary>${CHANGELOG.map(c =>
           `<div class="clog-v"><b>${esc(c.v)}</b> <span>${esc(c.date)}</span><ul>${c.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}</details>
       </div>`;

@@ -57,13 +57,14 @@
     const err = $('#serr'); err.classList.add('hide');
     const name = $('#sn').value.trim(), username = $('#su').value.trim().toLowerCase();
     const password = $('#sp').value, password2 = $('#sp2').value;
-    if (!name) return showErr(err, '이름을 입력해 주세요');
+    if (!name) return showErr(err, '닉네임을 입력해 주세요');
     if (!/^[a-z0-9_]{3,20}$/.test(username)) return showErr(err, '아이디는 영문 소문자·숫자·_ 3~20자로 만들어 주세요');
     if (password.length < 4) return showErr(err, '비밀번호는 4자 이상이어야 해요');
     if (password !== password2) return showErr(err, '비밀번호 확인이 일치하지 않아요');
+    if (!$('#agree').checked) return showErr(err, '프로필 공개 안내에 동의해 주세요');
     btn.classList.add('busy'); btn.textContent = '가입 중…';
     try {
-      const r = await RD.api('signup', { name, username, password });
+      const r = await RD.api('signup', { name, username, password, agreed: true });
       RD.session.set({ token: r.token, user: r.user });
       RD.toast('가입 완료! 이제 연구 프로필을 만들어 주세요');
       location.href = next || RD.url('features/profile/profile.html');

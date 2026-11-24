@@ -18,7 +18,7 @@
     skills: [{ raw: '', tag: null, level: 2, evNote: '' }], needs: [''],
     exp: { papers: 0, talks: 0, projects: 0 }, expNote: '',
     deptPref: '다른 계열과 융합', goals: [],
-    hours: [3, 6], mode: '블렌디드', available: true, types: [],
+    hours: [3, 6], mode: '블렌디드', available: true, types: [], visibility: 'public',
   };
   let state = clone(EMPTY);
   let all = [];
@@ -31,10 +31,36 @@
   checks($('#goals'), GOALS, 'goal');
   checks($('#types'), COLLAB_TYPES, 'type');
   checks($('#deptPref'), DEPT_PREFS, 'deptPref', 'radio');
+  $('#visibility').innerHTML = Object.entries(VISIBILITY).map(([k, v]) =>
+    `<label><input type="radio" name="vis" value="${k}"> ${e(v.label)} <small class="mute">${e(v.desc)}</small></label>`).join('');
   $('#degree').innerHTML = DEGREES.map(m => `<option>${m}</option>`).join('');
   $('#field').innerHTML = FIELDS.map(m => `<option>${m}</option>`).join('');
   $('#mode').innerHTML = MODES.map(m => `<option>${m}</option>`).join('');
   $('#name').value = me.name;
+  $('#nick').value = me.name;
+
+  /* ---------- 계정: 닉네임·비밀번호 변경 ---------- */
+  $('#nickBtn').onclick = async () => {
+    const name = $('#nick').value.trim();
+    if (!name || name === me.name) return;
+    $('#nickBtn').classList.add('busy');
+    try {
+      const r = await RD.api('rename', { name });
+      const s = RD.session.get(); s.user = r.user; RD.session.set(s); me.name = name;
+      $('#name').value = name; RD.toast('닉네임을 바꿨어요'); preview();
+      const nav = document.querySelector('.who-n'); if (nav) nav.textContent = name;
+    } catch (ex) { RD.toast(ex.message); $('#nick').value = me.name; }
+    $('#nickBtn').classList.remove('busy');
+  };
+  $('#pwBtn').onclick = async () => {
+    const er = $('#pwErr'); er.classList.add('hide');
+    const oldPassword = $('#pwOld').value, newPassword = $('#pwNew').value;
+    if (newPassword.length < 4) { er.textContent = '새 비밀번호는 4자 이상'; er.classList.remove('hide'); return; }
+    $('#pwBtn').classList.add('busy');
+    try { await RD.api('changePassword', { oldPassword, newPassword }); $('#pwOld').value = ''; $('#pwNew').value = ''; RD.toast('비밀번호를 바꿨어요'); }
+    catch (ex) { er.textContent = ex.message; er.classList.remove('hide'); }
+    $('#pwBtn').classList.remove('busy');
+  };
 
   /* ---------- 탭 ---------- */
   document.querySelectorAll('.mtab').forEach(b => {
@@ -89,7 +115,7 @@
     $('#papers').value = +x.papers || 0; $('#talks').value = +x.talks || 0; $('#projects').value = +x.projects || 0;
     const setChecks = (name, list) => document.querySelectorAll(`[name=${name}]`).forEach(c => { c.checked = (list || []).includes(c.value); });
     setChecks('topic', state.topics); setChecks('goal', state.goals); setChecks('type', state.types);
-    setChecks('deptPref', [state.deptPref]);
+    setChecks('deptPref', [state.deptPref]); setChecks('vis', [state.visibility || 'public']);
     if (!state.skills || !state.skills.length) state.skills = clone(EMPTY.skills);
     state.needs = (state.needs && state.needs.length) ? state.needs : [''];
     drawSkills();
@@ -109,6 +135,7 @@
     state.goals = getChecks('goal');
     state.types = getChecks('type');
     state.deptPref = getChecks('deptPref')[0] || '상관없음';
+    state.visibility = getChecks('vis')[0] || 'public';
     state.skills = [...document.querySelectorAll('.sk-row')].map(row => {
       const raw = row.querySelector('.sk-raw').value.trim();
       return { raw, tag: normalizeSkill(raw).tag, level: +row.querySelector('.sk-lv').value, evNote: row.querySelector('.ev').value.trim() };

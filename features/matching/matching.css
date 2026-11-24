@@ -58,3 +58,6 @@
 .tfilter button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .tfilter button.on small{color:#c9ccd6}
 .mc-act{align-items:center;flex-wrap:wrap}
+
+/* v0.4 적합도 게이트 안내 */
+.gate-note{font-size:13px;color:var(--sub);margin-bottom:12px;min-height:1px}

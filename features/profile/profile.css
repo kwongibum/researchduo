@@ -37,3 +37,11 @@ input:disabled{background:var(--bg);color:var(--sub)}
   .sk-row{grid-template-columns:1fr 88px 34px}
   .sk-row .ev{grid-column:1/3}
 }
+
+/* v0.4 공개범위 라디오 + 계정 카드 */
+.checks.radio label small{font-weight:500}
+.acct{margin-top:14px}
+.acct .inline{display:grid;grid-template-columns:1fr auto;gap:6px}
+.acct .pw summary{cursor:pointer;font-size:13.5px;font-weight:700;color:var(--sub)}
+.acct .pw{margin-top:4px}
+.acct .row-end{margin-top:4px}

@@ -17,7 +17,7 @@
   <div class="ph">
     <div class="kick">기능 1 · 연구 프로필</div>
     <h1>연구 프로필</h1>
-    <p>입력 항목은 <b>매칭 카테고리 6개</b>(①~⑥) 순서로 되어 있어요. 저장하면 팀 스프레드시트에 올라가서 모든 팀원에게 보여요.</p>
+    <p>입력 항목은 <b>매칭 카테고리 6개</b>(①~⑥) 순서로 되어 있어요. 저장하면 서버에 올라가서 모든 팀원에게 보여요.</p>
   </div>
 
   <div class="mtabs" role="tablist">
@@ -102,8 +102,13 @@
         </section>
 
         <section class="fs">
-          <div class="field"><label for="intro">관심 연구 소개 <small>선택</small></label>
+          <div class="field"><label for="intro">관심 연구 소개 <small>선택 · 연결된 연구자에게만 보여요</small></label>
             <textarea id="intro" rows="2" placeholder="요즘 관심 있는 연구를 한두 문장으로"></textarea></div>
+        </section>
+
+        <section class="fs">
+          <h2 class="fs-h"><span>🔒</span>프로필 공개 범위</h2>
+          <div class="checks radio" id="visibility"></div>
         </section>
 
         <p id="err" class="hint err hide"></p>
@@ -116,6 +121,16 @@
       <aside class="sticky">
         <div class="pre-h">미리보기 <span class="mute">다른 팀원에게 보이는 화면</span></div>
         <div id="preview"></div>
+        <div class="card acct">
+          <div class="card-h"><h2>계정</h2></div>
+          <div class="field"><label for="nick">닉네임</label>
+            <div class="inline"><input type="text" id="nick"><button type="button" class="btn sm" id="nickBtn">변경</button></div></div>
+          <details class="pw"><summary>비밀번호 변경</summary>
+            <div class="field" style="margin-top:8px"><input type="password" id="pwOld" placeholder="현재 비밀번호" autocomplete="current-password"></div>
+            <div class="field"><input type="password" id="pwNew" placeholder="새 비밀번호 (4자 이상)" autocomplete="new-password"></div>
+            <div class="row-end"><span class="hint err hide" id="pwErr"></span><button type="button" class="btn sm" id="pwBtn">변경</button></div>
+          </details>
+        </div>
       </aside>
     </div>
   </section>

@@ -93,3 +93,11 @@ const REVIEW_KEYWORDS = ['응답이 빨라요', '분석이 꼼꼼해요', '일�
 const TEAM_STATUS = ['모집 중', '진행 중', '완료'];
 const REJECT_REASONS = ['지금은 시간이 없어요', '연구 주제가 맞지 않아요', '요청한 역할을 하기 어려워요', '이미 다른 팀에 참여 중이에요', '기타'];
 const PERIODS = ['1회 자문', '2주 단기 협업', '한 달', '한 학기'];
+
+/* 9. 보안/프라이버시 (v0.4) */
+const VISIBILITY = {
+  public:    { label: '전체 공개', desc: '매칭에 뜨고, 상세 프로필도 볼 수 있어요' },
+  matchonly: { label: '적합도 높을 때만', desc: '나와 잘 맞는 연구자에게만 노출돼요' },
+  private:   { label: '비공개', desc: '검색·추천에서 빠져요. 초대로만 합류' },
+};
+const MATCH_THRESHOLD = 45;   // 이 점수 이상만 기본으로 매칭 목록에 보여요 (조건 없는 열람 방지)

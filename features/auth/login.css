@@ -15,3 +15,8 @@
   .auth{grid-template-columns:1fr;gap:24px;min-height:0}
   .auth h1{font-size:27px}
 }
+
+/* v0.4 동의 체크 */
+.consent{display:flex;gap:9px;align-items:flex-start;background:var(--bg);border-radius:8px;padding:11px 13px;margin-bottom:14px;font-size:13px;color:var(--sub);line-height:1.5;cursor:pointer}
+.consent input{margin-top:2px;width:16px;height:16px;flex:none;accent-color:var(--blue)}
+.consent b{color:var(--ink)}

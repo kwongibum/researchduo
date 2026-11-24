@@ -23,6 +23,7 @@
   try { weights = JSON.parse(localStorage.getItem('rd_weights') || '{}'); } catch (x) { weights = {}; }
   const saveW = () => { try { localStorage.setItem('rd_weights', JSON.stringify(weights)); } catch (x) {} };
   let typeFilter = '전체';
+  let showLow = false;
 
   let myProfile = null, profiles = [], requests = [], projects = [];
 
@@ -86,17 +87,25 @@
   function drawResults() {
     if (!myProfile) return;
     ranked = RDMatch.rank(myProfile, profiles, weights);
-    const shown = ranked.filter(m => typeFilter === '전체' || memberType(m.other) === typeFilter);
     const box = $('#results');
     if (!ranked.length) {
       box.innerHTML = `<div class="empty"><b>아직 비교할 다른 연구자가 없어요</b>팀원들이 회원가입하고 프로필을 저장하면 여기에 나타나요.</div>`;
       return;
     }
+    // 프라이버시: 기본은 적합도 임계값 이상만 노출(조건 없는 열람 방지). '적합도 높을 때만' 설정자는 임계값 아래면 더보기에도 숨김.
+    const okScore = m => m.total >= MATCH_THRESHOLD;
+    const visibleAll = ranked.filter(m => okScore(m) || (showLow && m.other.visibility !== 'matchonly'));
+    const hiddenCount = ranked.length - visibleAll.length;
+    const shown = visibleAll.filter(m => typeFilter === '전체' || memberType(m.other) === typeFilter);
     const types = ['전체', '학부생', '대학원생', '교수'];
-    box.innerHTML = `<div class="res-top"><h2>추천 연구자 ${shown.length}명</h2><span class="mute">시트에 저장된 프로필 기준 · <button class="linkbtn" id="reload">새로고침</button></span></div>
-      <div class="tfilter">${types.map(t => `<button class="${t === typeFilter ? 'on' : ''}" data-t="${t}">${t}<small>${t === '전체' ? ranked.length : ranked.filter(m => memberType(m.other) === t).length}</small></button>`).join('')}</div>
-      ${shown.length ? shown.map(card).join('') : '<div class="empty">이 구분에 해당하는 연구자가 없어요.</div>'}`;
+    box.innerHTML = `<div class="res-top"><h2>추천 연구자 ${shown.length}명</h2><span class="mute">적합도 ${MATCH_THRESHOLD}점 이상 기준 · <button class="linkbtn" id="reload">새로고침</button></span></div>
+      <div class="tfilter">${types.map(t => `<button class="${t === typeFilter ? 'on' : ''}" data-t="${t}">${t}<small>${t === '전체' ? visibleAll.length : visibleAll.filter(m => memberType(m.other) === t).length}</small></button>`).join('')}</div>
+      <div class="gate-note">${showLow
+        ? `적합도 낮은 연구자까지 보는 중 · <button class="linkbtn" id="toggleLow">적합도 높은 사람만</button>`
+        : hiddenCount ? `적합도가 낮은 연구자 ${hiddenCount}명은 숨겼어요 (조건 없는 열람 방지) · <button class="linkbtn" id="toggleLow">그래도 더 보기</button>` : ''}</div>
+      ${shown.length ? shown.map(card).join('') : '<div class="empty">조건에 맞는 연구자가 없어요. ‘더 보기’로 넓혀 보세요.</div>'}`;
     $('#reload').onclick = load;
+    const tl = box.querySelector('#toggleLow'); if (tl) tl.onclick = () => { showLow = !showLow; drawResults(); };
     box.querySelectorAll('.tfilter button').forEach(b => { b.onclick = () => { typeFilter = b.dataset.t; drawResults(); }; });
     box.querySelectorAll('[data-view]').forEach(b => { b.onclick = () => view(b.dataset.view); });
     box.querySelectorAll('[data-req]').forEach(b => { b.onclick = () => inviteModal(b.dataset.req); });

@@ -1,6 +1,6 @@
 /* =========================================================
-   연구해듀오 — 설정 (core/config.js)
-   ★ 구글 Apps Script를 배포하고 받은 '웹 앱 URL'을 아래 따옴표 안에 붙여넣으세요.
-     예) const API_URL = 'https://script.google.com/macros/s/AKfy.../exec';
+   연구해듀오 — 설정 (core/config.js)  v0.4
+   백엔드를 Vercel 서버 함수로 이전했어요. 화면과 서버가 같은 사이트라서
+   주소를 따로 넣을 필요 없이 /api/rpc 로 고정이에요. (구글 Apps Script URL 불필요)
    ========================================================= */
-const API_URL = 'https://script.google.com/macros/s/AKfycbxPmP9EkvBhuztlVZ9f11neNaq4UmfBTcW_YxxsEkWktirfoyGajnhlOQ6gT5uMb9Lt1Q/exec';
+const API_URL = '/api/rpc';
